@@ -78,6 +78,7 @@ First let's set permissions for the var directory
 
 ```bash
 chmod -R 755 var
+chmod -R 777 var
 ```
 
 If the /var/data.db file does not exist, you can create the db file using the following commands:
@@ -86,6 +87,8 @@ If the /var/data.db file does not exist, you can create the db file using the fo
 php bin/console doctrine:database:create
 php bin/console doctrine:schema:update --force
 ```
+
+- If:  `An exception occurred in the driver: SQLSTATE[HY000] [14] unable to open database file` appears, this is a fopen() fclose() problem within doctrine.
 
 Now we make our first migrations to the database, there may be no changes.
 
