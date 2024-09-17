@@ -35,7 +35,7 @@ Do this in case you don't have PHP 8.x installed, Composer and Symfony CLI insta
 
 1. Visit the [PHP official website](https://www.php.net/downloads) and download the latest stable Thread Safe PHP version.
 
-2. Windows: Create a new folder `C:\php` and extract the downloaded PHP archive there.
+2. Windows: Create a new folder `C:\php` and extract the downloaded PHP files there.
 
 ### 2. Install Composer, which is used to install PHP packages.
 
@@ -62,7 +62,7 @@ cd symfony_crud_poc
 composer install
 ```
 
-3. Create a new `.env` file in the project root directory and add the following content:
+3. Go to the `.env` file in the project root directory and add the following content:
 
 ```bash
 API_TOKEN=mY-Very-Secret-Token
@@ -70,7 +70,7 @@ API_TOKEN=mY-Very-Secret-Token
 DATABASE_URL="sqlite:///C:/<PATH_TO_PROJECT>/symfony_crud_poc/var/data.db"
 ```
 
-As you can see, we are using a SQLite database for the project.
+As you can see, we are using a SQLite database for the local project just to keep it simple, but you can also try Supabase.
 
 ## Create the database
 
@@ -79,6 +79,11 @@ If the /var/data.db file does not exist, you can create the db file using the fo
 ```bash
 php bin/console doctrine:database:create
 php bin/console doctrine:schema:update --force
+```
+
+Now we make our first migrations to the database, there may be no changes.
+
+```bash
 php bin/console doctrine:migrations:diff
 php bin/console doctrine:migrations:migrate
 ```
