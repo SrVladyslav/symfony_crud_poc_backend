@@ -1,0 +1,330 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+      "title": "Symfony API REST",
+      "description": "CRUD API in Symfony",
+      "version": "1.0.0"
+  },
+  "paths": {
+      "/api/categories/get": {
+          "get": {
+              "operationId": "get_api_categoriesget_all",
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              },
+              "security": [
+                {
+                    "bearerAuth": []
+                }
+              ]
+          }
+      },
+      "/api/categories/{category}/get": {
+          "get": {
+              "operationId": "get_api_categoriesget_by_id",
+              "parameters": [
+                  {
+                      "name": "category",
+                      "in": "path",
+                      "required": true,
+                      "schema": {
+                          "type": "string"
+                      }
+                  }
+              ],
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              }
+          }
+      },
+      "/api/categories/create": {
+          "post": {
+              "operationId": "post_api_categoriescreate_category",
+              "requestBody": {
+                  "required": true,
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/CategoryDto"
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              }
+          }
+      },
+      "/api/categories/{id}/update": {
+          "put": {
+              "operationId": "put_api_categoriesupdate_category",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "required": true,
+                      "schema": {
+                          "type": "string"
+                      }
+                  }
+              ],
+              "requestBody": {
+                  "required": true,
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/CategoryDto"
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              }
+          }
+      },
+      "/api/categories/{category}/delete": {
+          "delete": {
+              "operationId": "delete_api_categoriesdelete_category",
+              "parameters": [
+                  {
+                      "name": "category",
+                      "in": "path",
+                      "required": true,
+                      "schema": {
+                          "type": "string"
+                      }
+                  }
+              ],
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              }
+          }
+      },
+      "/api/products/get": {
+          "get": {
+              "operationId": "get_api_productsget_products",
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              }
+          }
+      },
+      "/api/products/{product}/get": {
+          "get": {
+              "operationId": "get_api_productsget_product_by_id",
+              "parameters": [
+                  {
+                      "name": "product",
+                      "in": "path",
+                      "required": true,
+                      "schema": {
+                          "type": "string"
+                      }
+                  }
+              ],
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              }
+          }
+      },
+      "/api/products/create": {
+          "post": {
+              "operationId": "post_api_productscreate_product",
+              "requestBody": {
+                  "required": true,
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/ProductDto"
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              }
+          }
+      },
+      "/api/products/{id}/update": {
+          "put": {
+              "summary": "Update a product by the given ID. Requires full product data in the request body.",
+              "operationId": "put_api_productsupdate_product",
+              "parameters": [
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "required": true,
+                      "schema": {
+                          "type": "string"
+                      }
+                  }
+              ],
+              "requestBody": {
+                  "required": true,
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/ProductDto"
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              }
+          }
+      },
+      "/api/products/{product}/delete": {
+          "delete": {
+              "summary": "Delete a product by the given ID. Validates the authorization token and performs the deletion.",
+              "operationId": "delete_api_productsdelete_product",
+              "parameters": [
+                  {
+                      "name": "product",
+                      "in": "path",
+                      "required": true,
+                      "schema": {
+                          "type": "string"
+                      }
+                  }
+              ],
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              }
+          }
+      },
+      "/api-docs": {
+          "get": {
+              "operationId": "get_swagger_ui",
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              }
+          },
+          "put": {
+              "operationId": "put_swagger_ui",
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              }
+          },
+          "post": {
+              "operationId": "post_swagger_ui",
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              }
+          },
+          "delete": {
+              "operationId": "delete_swagger_ui",
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              }
+          },
+          "options": {
+              "operationId": "options_swagger_ui",
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              }
+          },
+          "head": {
+              "operationId": "head_swagger_ui",
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              }
+          },
+          "patch": {
+              "operationId": "patch_swagger_ui",
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              }
+          },
+          "trace": {
+              "operationId": "trace_swagger_ui",
+              "responses": {
+                  "default": {
+                      "description": ""
+                  }
+              }
+          }
+      }
+  },
+  "components": {
+      "schemas": {
+          "CategoryDto": {
+              "required": [
+                  "name"
+              ],
+              "properties": {
+                  "name": {
+                      "type": "string"
+                  },
+                  "description": {
+                      "type": "string",
+                      "default": "",
+                      "nullable": true
+                  }
+              },
+              "type": "object"
+          },
+          "ProductDto": {
+              "required": [
+                  "name"
+              ],
+              "properties": {
+                  "name": {
+                      "type": "string"
+                  },
+                  "description": {
+                      "type": "string",
+                      "default": "",
+                      "nullable": true
+                  },
+                  "price": {
+                      "type": "number",
+                      "format": "float",
+                      "default": 0,
+                      "nullable": true
+                  },
+                  "categoryId": {
+                      "type": "integer",
+                      "default": null,
+                      "nullable": true
+                  }
+              },
+              "type": "object"
+          }
+      }
+  }
+}

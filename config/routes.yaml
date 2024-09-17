@@ -1,0 +1,13 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+swagger_ui:
+    path: /api-docs
+    controller: App\Controller\SwaggerUiController::index
+
+# nelmio_api_doc:
+#     path: /api/doc
+#     controller: nelmio_api_doc.controller.swagger_ui

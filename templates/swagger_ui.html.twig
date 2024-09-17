@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Documentation</title>
+    <link rel="stylesheet" type="text/css" href="{{ asset('swagger-ui/swagger-ui.css') }}" />
+    <script src="{{ asset('swagger-ui/swagger-ui-bundle.js') }}"></script>
+    <script src="{{ asset('swagger-ui/swagger-ui-standalone-preset.js') }}"></script>
+</head>
+<body>
+    <div id="swagger-ui"></div>
+    <script>
+        window.onload = function() {
+            const ui = SwaggerUIBundle({
+                url: "http://localhost:8000/api/doc.json",
+                //url: '{{ asset('swagger.json') }}', 
+                dom_id: '#swagger-ui',
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                layout: "StandaloneLayout"
+            });
+        };
+    </script>
+</body>
+</html>
