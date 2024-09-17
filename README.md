@@ -114,7 +114,11 @@ If you are running the server locally, you can access the Swagger UI at [http://
 
 This server is meant to be used as a local development server for the frontend application with the Symfony API server running on port `8000`, you can change the port in the `.env.local` file.
 
-1. Download the project locally. Go to the [frontend repository](https://github.com/SrVladyslav/symfony_crud_poc_frontend) for this project and clone it to your local machine.
+1. Download the project locally. You can go to the [frontend repository](https://github.com/SrVladyslav/symfony_crud_poc_frontend) and clone it to your local machine. Or just run:
+
+```bash
+git clone https://github.com/SrVladyslav/symfony_crud_poc_frontend.git
+```
 
 2. Navigate to the project directory and install the required dependencies using npm:
 
