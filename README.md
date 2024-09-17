@@ -74,6 +74,12 @@ As you can see, we are using a SQLite database for the local project just to kee
 
 ## Create the database
 
+First let's set permissions for the var directory
+
+```bash
+chmod -R 755 var
+```
+
 If the /var/data.db file does not exist, you can create the db file using the following commands:
 
 ```bash
