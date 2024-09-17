@@ -52,7 +52,7 @@ Follow the official [Symfony CLI installation guide](https://symfony.com/downloa
 1. Clone the repository to your local machine using the following command:
 
 ```bash
-git clone https://github.com/SrVladyslav/symfony_crud_poc.git
+git clone https://github.com/SrVladyslav/symfony_crud_poc_backend.git
 ```
 
 2. Navigate to the project directory and install the required dependencies using Composer:
