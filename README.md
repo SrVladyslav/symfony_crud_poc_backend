@@ -2,11 +2,11 @@ This document provides an overview of the available API endpoints, their usage, 
 
 # ⚠️ API Important considerations
 
-- In the `GET` endpoints we **don't use pagination to keep this POC simple**, but in a real project we should implement it.
+- In the `GET` endpoints $${\color{yellow}we \space don't \space  use \space pagination \space in \space order \space to \space keep \space this \space POC \space simple}$$ , but in a real project we should implement it.
 
-- We suppose that each product must have a `category`, so you need to create **firsly a category before creating a product**.
+- We suppose that each product must have a `category`, so  $${\color{yellow}first \space you \space need \space to \space create \space a \space category \space before \space creating \space a \space product}$$.
 
-- The Many-To-One relation between `Category` and `Product` is implemented with `ON DELETE CASCADE`, so be carefull when deleting a category, all the products associated with it will be deleted as well.
+- The Many-To-One relation between `Category` and `Product` is implemented with `ON DELETE CASCADE`, so be carefull when deleting a category, $${\color{yellow}all \space the \space products \space associated \space with \space it \space will \space be \space deleted \space as \space well}$$.
 
 ## 🔑 Token-Based Authentication
 
@@ -117,10 +117,17 @@ If the /var/data.db file does not exist, you can create the db file using the fo
 
 ```bash
 php bin/console doctrine:database:create
-php bin/console doctrine:schema:update --force
+php bin/console doctrine:schema:update --force 
 ```
 
-- If:  `An exception occurred in the driver: SQLSTATE[HY000] [14] unable to open database file` appears, this is a fopen() fclose() problem within doctrine.
+<details><summary><strong>👀 In case of: $${\color{red}SQLSTATE[HY000] [14] unable to open database file}$$ error.</strong></summary>
+
+- If:  `An exception occurred in the driver: SQLSTATE[HY000] [14] unable to open database file` appears, in this case, if you want to run a local server, the best way is to provide an absolute path to the db file. First go to your /var folder, open a terminal and run `pwd`, then go and edit the `DATABASE_URL` in the `.env` file, for example you should have something like: `DATABASE_URL="<YOUR_DB_DRIVER>:///C:/<PATH_TO_PROJECT>/symfony_crud_poc/var/data.db"`. Finally re-run the database:create code.
+    
+</details>
+
+
+
 
 Now we make our first migrations to the database, there may be no changes.
 
