@@ -72,7 +72,7 @@ DATABASE_URL="sqlite:///C:/<PATH_TO_PROJECT>/symfony_crud_poc/var/data.db"
 
 As you can see, we are using a SQLite database for the local project just to keep it simple, but you can also try Supabase.
 
-## Create the database
+## Database configuration
 
 First let's set permissions for the var directory
 
@@ -80,6 +80,38 @@ First let's set permissions for the var directory
 chmod -R 755 var
 chmod -R 777 var
 ```
+
+### Prior configurations
+
+Before creating the Database, you should choose the DB to use, so in our case will be the SQLite, but you can use other ones if you want. 
+
+1. Let's config the doctrine yaml file, in your project open the `/config/packages/doctrine.yaml` file, and config the `drive` to use the one you prefer, In our case is `pdo_sqlite`. You should have something like this:
+
+```bash
+doctrine:
+    dbal:
+        # driver: 'pdo_pgsql' # You can also choose to use the PostgreSQL
+        driver: 'pdo_sqlite'
+        url: '%env(DATABASE_URL)%'
+```
+
+2. Now, if you are using the PHP first time, you should activate the database drivers, to do it, go to your php files in (Windows) and open the `php.ini` file: `C:\php\php.ini`.
+3. Once you are in `C:\php\php.ini`, open it with your favorite text editor and then de-coment the extensions of the db driver you want to use. for example, `pdo_pgsql` and `pgsql` for PostgreSQL or `sqlite3` and `pdo_sqlite` for SQLite. Filally you should have something like this:
+
+```bash
+      ...
+;extension=pdo_mysql
+extension=pdo_pgsql
+extension=pdo_sqlite
+extension=pgsql
+      ...
+;extension=sodium
+extension=sqlite3
+      ...
+
+``` 
+
+### Create the DB
 
 If the /var/data.db file does not exist, you can create the db file using the following commands:
 
