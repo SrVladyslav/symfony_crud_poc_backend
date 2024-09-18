@@ -2,24 +2,29 @@ name: app
 
 type: php:8.3
 
+dependencies:
+    php:
+        composer/composer: "^2"
+
 runtime:
     extensions:
         - apcu
-        - mbstring
-        - sodium
+        - blackfire
         - ctype
         - iconv
+        - mbstring
+        - pdo_pgsql
+        - sodium
+        - xsl
         
 
-#variables:
-#    php:
-#        # uncomment on PHP 7.4+
-#        #opcache.preload: config/preload.php
-
+variables:
+    php:
+        opcache.preload: config/preload.php
 build:
     flavor: none
 
-disk: 512
+disk: 1024
 
 web:
     locations:
@@ -28,12 +33,13 @@ web:
             expires: 1h
             passthru: "/index.php"
 
-
-
 mounts:
     "/var": { source: local, source_path: var }
     
 
+relationships:
+    database: "database:postgresql"
+    
 hooks:
     build: |
         set -x -e
@@ -46,3 +52,16 @@ hooks:
         set -x -e
 
         symfony-deploy
+
+crons:
+    security-check:
+        # Check that no security issues have been found for PHP packages deployed in production
+        # See https://github.com/fabpot/local-php-security-checker
+        spec: '50 23 * * *'
+        cmd: if [ "$PLATFORM_ENVIRONMENT_TYPE" = "production" ]; then croncape php-security-checker; fi
+
+workers:
+    messenger:
+        commands:
+            # Consume "async" messages (as configured in the routing section of config/packages/messenger.yaml)
+            start: symfony console --time-limit=3600 --memory-limit=64M messenger:consume async
