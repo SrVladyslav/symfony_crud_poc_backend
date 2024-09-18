@@ -155,10 +155,10 @@ If you are running the server locally, you can access the Swagger UI at [http://
 
 ![Dedicated NextJS Frontend](https://github.com/SrVladyslav/symfony_crud_poc_frontend/blob/main/public/images/frontend_view.png?raw=true)
 
-This is a frontend application created for testing purposes of the Symfony API server running on localhost and port `8000`.
+This is a frontend app created for testing purposes of the Symfony API server running on localhost at port `8000`.
 
 > [!NOTE]  
-> If you have deployed your Backend to prod, you can also use this frontend server deployed to Vercel [here](https://symfony.vlamaz.com/).
+> If you have deployed your Backend to PROD, you can also use this frontend deployed to Vercel on [https://symfony.vlamaz.com/](https://symfony.vlamaz.com/).
 
 1. Keep the Symfony server running and open another terminal in the directory where you want to save this project, then download the it locally. You can go to the [frontend repository](https://github.com/SrVladyslav/symfony_crud_poc_frontend) and clone it to your local machine. Or just run:
 
@@ -313,11 +313,7 @@ To start using it just click [here](https://symfony.vlamaz.com/).
 
 # 🔥 Symfony deployment to Platform.sh
 
-You can also follow the [Official documentation](https://docs.platform.sh/guides/symfony.html).
-
-<p align="center">
-<a href="https://console.platform.sh/projects/create-project?template=https://raw.githubusercontent.com/symfonycorp/platformsh-symfony-template-metadata/main/symfony-demo.template.yaml&utm_content=symfonycorp&utm_source=github&utm_medium=button&utm_campaign=deploy_on_platform"><img src="https://platform.sh/images/deploy/lg-blue.svg" alt="Deploy on Platform.sh" width="180px" /></a>
-</p>
+Follow the [Official documentation](https://docs.platform.sh/guides/symfony.html) to get started with Symfony and Platform.sh.
 
 ## 1. Prerequisites
 
@@ -331,23 +327,22 @@ scoop install platform
 
 ## 2. Prepare Symfony Application
 
-1. Config SQLite, we will be using SQLite for our PoC, which is not recomended for a real production. Ensure that your `.env` file inclues:
+> [!NOTE]  
+> This project already has all the Platform.sh configuration files.
+
+1. We were using SQLite for our PoC, which is not recomended for a real production project, please, ensure that your `.env` file is updated with good DATABASE_URL:
 
 ```bash
-DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
+DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db" # NOT FOR PRODUCTION
 ```
-
-2. Ensure that `var` directory exists.
 
 ## 3. Configure Platform.sh for Symfony
 
-1. Log in to Platform.sh
+1. Log in to Platform.sh: Follow the instructions to authenticate and connect your Platform.sh account.
 
 ```bash
 platform login
 ```
-
-Follow the instructions to authenticate and connect your Platform.sh account.
 
 2. Create a New Project
 
@@ -356,6 +351,11 @@ Official guide [here](https://docs.platform.sh/get-started/deploy/init.html).
 ```bash
 platform project:create --title symfony_crud_poc --region eu-5.platform.sh
 ```
+> [!TIP]
+> In case you used the Platform.sh UI, you can link any repository to an existing Platform.sh project using the following command:
+> ```bash
+> symfony project:set-remote PROJECT_ID
+> ```
 
 > [!NOTE]  
 > If asks for `Default branch (--default-branch)`, set it to `true`.
@@ -369,37 +369,17 @@ You can check your project info running:
 platform project:list
 ```
 
-3. Create a new environment
+3. Use your own Git Hub repository:
 
-```bash
-platform environment:create penv
-```
-
-> [!TIP]
-> In case you used the Platform.sh UI, you can link any repository to an existing Platform.sh project using the following command:
-> ```bash
-> symfony project:set-remote PROJECT_ID
-> ```
-
-4. Generate a sensible default Platform.sh configuration en case you don't have it:
-
-```bash
-symfony project:init
-```
-
-This generates the following set of configuration files: `.platform.app.yaml`, `.platform/services.yaml`, `.platform/routes.yaml`, and `php.ini`.
-
-5. Init the `git` with your own repository and push changes to your github project, more information [here](https://kbroman.org/github_tutorial/pages/init.html) and [here](https://git-scm.com/docs/git-init). In case you have a GitHub repo for the project, just type: 
-
+> [!IMPORTANT]  
+> Delete the `.git` file before initializing your own.
+ 
 ```bash
 git init
 git add .
 git commit -m "Add Platform.sh configuration"
 git push
 ```
-
-> [!IMPORTANT]  
-> Delete the `.git` file before initializing your own.
 
 1. Create a `.platform.app.yaml` file in the root of your project with the following content:
 
