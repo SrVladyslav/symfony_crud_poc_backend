@@ -10,9 +10,12 @@
     <div id="swagger-ui"></div>
     <script>
         window.onload = function() {
+            const apiUrl = `${window.location.protocol}//${window.location.host}/api/doc.json`;
+
             const ui = SwaggerUIBundle({
-                url: "{{ app_api_url }}/api/doc.json",
+                // url: "{{ app_api_url }}/api/doc.json",
                 //url: '{{ asset('swagger.json') }}', 
+                url: apiUrl,
                 dom_id: '#swagger-ui',
                 presets: [
                     SwaggerUIBundle.presets.apis,
