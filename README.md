@@ -338,6 +338,18 @@ DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db" # NOT FOR PRODUCTION
 
 ## 3. Configure Platform.sh for Symfony
 
+> [!IMPORTANT]  
+> Delete the `.git` file before initializing your own, then init your Git Hub repository.
+ 
+```bash
+git init
+git add .
+git commit -m "First commit"
+git branch -M main
+git remote add origin https://github.com/<YOUR_GIT_HUB_USER>/<PROJECT_NAME>.git
+git push -u origin main
+```
+
 1. Log in to Platform.sh: Follow the instructions to authenticate and connect your Platform.sh account.
 
 ```bash
@@ -369,17 +381,6 @@ You can check your project info running:
 platform project:list
 ```
 
-3. Use your own Git Hub repository:
-
-> [!IMPORTANT]  
-> Delete the `.git` file before initializing your own.
- 
-```bash
-git init
-git add .
-git commit -m "Add Platform.sh configuration"
-git push
-```
 
 1. Create a `.platform.app.yaml` file in the root of your project with the following content:
 
