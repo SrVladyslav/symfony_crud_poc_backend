@@ -8,20 +8,11 @@ This document provides an overview of the available API endpoints, their usage, 
 
 - The Many-To-One relation between `Category` and `Product` is implemented with `ON DELETE CASCADE`, so be carefull when deleting a category, $${\color{yellow}all \space the \space products \space associated \space with \space it \space will \space be \space deleted \space as \space well}$$.
 
-## 🔑 Token-Based Authentication
-
-All endpoints require a valid authentication token. Include the token in the `Authorization` header as follows:
+- All endpoints require a valid authentication token. Include the token in the `Authorization` header as follows:
 
 ```bash
 
 Authorization: Bearer mY-Very-Secret-Token
-```
-
-For the sake of simplicity, we use the `.env` file to store the API Token in the `API_TOKEN` variable.
-
-```bash
-
-API_TOKEN=mY-Very-Secret-Token
 ```
 
 # 🔥 Project setup
@@ -62,7 +53,7 @@ cd symfony_crud_poc_backend
 composer install
 ```
 
-3. Go to the `.env` file in the project root directory and change the `API_TOKEN` in case you want to use your own one:
+3. 🔑[OPTIONAL IF RUNNING LOCALLY]: For the sake of simplicity, we use the `.env` file in the project root directory to store the API AUTH Token in the `API_TOKEN` variable. Change the `API_TOKEN` in case you want to use your own one:
 
 ```bash
 API_TOKEN=mY-Very-Secret-Token
@@ -70,18 +61,11 @@ API_TOKEN=mY-Very-Secret-Token
 
 ## Database configuration
 
-First let's set permissions for the var directory
-
-```bash
-chmod -R 755 var
-chmod -R 777 var
-```
-
 ### Prior configurations
 
 Before creating the Database, you should choose the DB to use, so in our case will be the SQLite, but you can use other ones if you want. 
 
-1. [GO TO STEP 2 IF WANT TO USE DEFAULT CONFIG] Let's config the doctrine yaml file, in your project open the `/config/packages/doctrine.yaml` file, and config the `drive` to use the one you prefer, In our case is `pdo_sqlite`. You should have something like this:
+1. [GO TO STEP 2 IF YOU WANT TO USE DEFAULT CONFIG]: Let's config the doctrine yaml file, in your project open the `/config/packages/doctrine.yaml` file, and edit the `driver` to use the one you prefer. We use `pdo_sqlite` by default:
 
 ```bash
 doctrine:
@@ -91,7 +75,9 @@ doctrine:
         url: '%env(DATABASE_URL)%'
 ```
 
-2. Now, $${\color{yellow}if \space this \space is \space the \space first \space time \space you \space are \space using \space the \space PHP}$$, you should activate the database drivers, to do it, go to your php files, once you are in (Windows) `C:\php\php.ini`, open the file with your favorite text editor and then de-coment the extensions of the db drivers you want to use. for example, `pdo_pgsql` and `pgsql` for PostgreSQL or `sqlite3` and `pdo_sqlite` for SQLite. Filally you should have something like this:
+2. ⚠️ $${\color{yellow}If \space this \space is \space the \space first \space time \space you \space are \space using \space PHP}$$ ⚠️, you should activate the database drivers:
+   - Locate your `php.ini` File: on Windows, `C:\php\php.ini`.
+   - Edit the file using your preferred text editor and uncomment the required extensions by removing the leading `;`. For example, `pdo_pgsql` and `pgsql` for PostgreSQL or `sqlite3` and `pdo_sqlite` for SQLite. After saving the file, your configuration should now include the necessary drivers, like this:
 
 ```bash
       ...
@@ -173,7 +159,7 @@ This is a frontend application created for testing purposes of the Symfony API s
 
 NOTE: If you deploy the Backend to prod, you also have this frontend server deployed to vercel [here](https://symfony.vlamaz.com/).
 
-1. Download the project locally. You can go to the [frontend repository](https://github.com/SrVladyslav/symfony_crud_poc_frontend) and clone it to your local machine. Or just run:
+1. Keep the Symfony server running and open another terminal in the directory where you want to save this project, then download the it locally. You can go to the [frontend repository](https://github.com/SrVladyslav/symfony_crud_poc_frontend) and clone it to your local machine. Or just run:
 
 ```bash
 git clone https://github.com/SrVladyslav/symfony_crud_poc_frontend.git
@@ -186,7 +172,7 @@ cd symfony_crud_poc_frontend
 npm install
 ```
 
-3. Start the development server or create a build, which has better performance. Finally, open your browser on [`http://localhost:3000/`](http://localhost:3000/):
+3. Start the development server or create a build, which has better performance:
 
 ```bash
 npm run dev
@@ -198,6 +184,8 @@ or
 npm run build
 npm run start
 ```
+
+Finally, open your browser on [`http://localhost:3000/`](http://localhost:3000/)
 
 4. Now you can try out the API endpoints, by default it will try to connect to the local server running on port `http://localhost:8000`, but you can change this URL using the input on TOP and clicking the `Change URL` button.
 
@@ -321,6 +309,36 @@ To start using it just click [here](https://symfony.vlamaz.com/).
 | `/api/products/{id}/delete` | DELETE | Deletes the product identified by the given `id`.                    |
 
 <hr>
+
+# 🔥 Symfony deployment
+
+## Prerequisites
+
+1. **Platform.sh Account**: [Sign up](https://auth.api.platform.sh/register?trial_type=general) for a Platform.sh account if you don’t already have one.
+2. **Platform.sh CLI**: Install the Platform.sh CLI tool. Full instructions can be found [here](https://docs.platform.sh/administration/cli.html).
+   1. Install using Scoop:
+
+```bash
+scoop bucket add platformsh https://github.com/platformsh/homebrew-tap.git
+scoop install platform
+```
+
+## Prepare Symfony Application
+
+1. Config SQLite:
+      
+    
+
+
+## Deploy with Platform CLI:
+1. Install CLI using 
+
+## Deploy with Platform UI:
+
+1. Go to `https://console.platform.sh/projects/create-project/type` and Select the `Create from scratch` option.
+2. Fill the project details, AWS is recomended e.g.: `Europe - Sweeden (e5) - AWS`.
+3. 
+
 
 ### Useful Commands
 
