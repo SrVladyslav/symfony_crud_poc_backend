@@ -474,5 +474,6 @@ Some of the used migrations.
 - **`composer require nelmio/api-doc-bundle`**
 - **`composer require asset`**
 - **`composer require symfony/orm-pack`**
+- **`composer require symfony/maker-bundle`**
 - **`composer require doctrine/doctrine-bundle`**
 - **`composer require doctrine/dbal`**
