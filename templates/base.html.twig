@@ -10,7 +10,10 @@
         {% block javascripts %}
         {% endblock %}
     </head>
-    <body>
+    <body style="display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; padding: 20px;">
+        <p style="text-align: center;">
+            Hello! Let's start with the <a href="{{ app_api_docs_url }}" >documentation</a>😊!.
+        </p>
         {% block body %}{% endblock %}
     </body>
 </html>
