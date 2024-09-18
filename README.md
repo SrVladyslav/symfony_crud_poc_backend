@@ -68,8 +68,6 @@ composer install
 API_TOKEN=mY-Very-Secret-Token
 ```
 
-You can also try [Supabase](https://supabase.com/) which is using `PostgreSQL`.
-
 ## Database configuration
 
 First let's set permissions for the var directory
@@ -83,7 +81,7 @@ chmod -R 777 var
 
 Before creating the Database, you should choose the DB to use, so in our case will be the SQLite, but you can use other ones if you want. 
 
-1. Let's config the doctrine yaml file, in your project open the `/config/packages/doctrine.yaml` file, and config the `drive` to use the one you prefer, In our case is `pdo_sqlite`. You should have something like this:
+1. [GO TO STEP 2 IF WANT TO USE DEFAULT CONFIG] Let's config the doctrine yaml file, in your project open the `/config/packages/doctrine.yaml` file, and config the `drive` to use the one you prefer, In our case is `pdo_sqlite`. You should have something like this:
 
 ```bash
 doctrine:
@@ -93,7 +91,7 @@ doctrine:
         url: '%env(DATABASE_URL)%'
 ```
 
-2. Now, if you are using the PHP first time, you should activate the database drivers, to do it, go to your php files, once you are in (Windows) `C:\php\php.ini`, open the file with your favorite text editor and then de-coment the extensions of the db drivers you want to use. for example, `pdo_pgsql` and `pgsql` for PostgreSQL or `sqlite3` and `pdo_sqlite` for SQLite. Filally you should have something like this:
+2. Now, $${\color{yellow}if \space this \space is \space the \space first \space time \space you \space are \space using \space the \space PHP}$$, you should activate the database drivers, to do it, go to your php files, once you are in (Windows) `C:\php\php.ini`, open the file with your favorite text editor and then de-coment the extensions of the db drivers you want to use. for example, `pdo_pgsql` and `pgsql` for PostgreSQL or `sqlite3` and `pdo_sqlite` for SQLite. Filally you should have something like this:
 
 ```bash
       ...
@@ -108,12 +106,14 @@ extension=sqlite3
 
 ```
 
-3. Once you decided the driver you will be using, go to the `.env` file and change the `DATABASE_URL` to one you want to use.  $${\color{yellow}By \space default \space is \space set \space to \space local \space SQLite}$$. So if you will be running it in local with SQLite, don't touch it.
+3. Once you decided the driver you will be using, go to the `.env` file and change the `DATABASE_URL` to one you want to use.  $${\color{yellow}By \space default \space is \space set \space to \space local \space SQLite}$$, so if you will be running it in local with SQLite, don't touch it.
 
 ```bash
 DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db" # Default configuration
 DATABASE_URL="<YOUR_DRIVER>:///<PATH_TO_PROJECT_VAR>/var/data.db"
 ```
+
+You can also try [Supabase](https://supabase.com/) which is using `PostgreSQL`.
 
 ### Create the DB
 
@@ -121,7 +121,6 @@ If the /var/data.db file does not exist, you can create the db file using the fo
 
 ```bash
 php bin/console doctrine:database:create
-php bin/console doctrine:schema:update --force 
 ```
 
 <details><summary><strong>👀 In case of: $${\color{red}SQLSTATE[HY000] \space [14] \space unable \space to \space open \space database \space file}$$ error.</strong></summary>
@@ -141,6 +140,8 @@ Push the migrations to the DB by running:
 ```bash
 php bin/console doctrine:migrations:migrate
 ```
+
+Type `yes` when WARNING is prompted.
 
 ## Run the server
 
@@ -181,14 +182,21 @@ git clone https://github.com/SrVladyslav/symfony_crud_poc_frontend.git
 2. Navigate to the project directory and install the required dependencies using npm:
 
 ```bash
-cd frontend
+cd symfony_crud_poc_frontend
 npm install
 ```
 
-3. Start the development server and open your browser to `http://localhost:3000/`:
+3. Start the development server or create a build, which has better performance. Finally, open your browser on [`http://localhost:3000/`](http://localhost:3000/):
 
 ```bash
 npm run dev
+```
+
+or
+
+```bash
+npm run build
+npm run start
 ```
 
 4. Now you can try out the API endpoints, by default it will try to connect to the local server running on port `http://localhost:8000`, but you can change this URL using the input on TOP and clicking the `Change URL` button.
@@ -331,6 +339,10 @@ To start using it just click [here](https://symfony.vlamaz.com/).
 - **`php bin/console make:migration`**
 
   Creates a new empty migration class. This is useful if you need to manually write custom migration logic instead of relying on `doctrine:migrations:diff` to generate migrations automatically.
+
+- **`php bin/console doctrine:schema:update --force`**
+
+  Updates your database schema based on your Doctrine entity mappings.
 
 Some of the used migrations.
 
