@@ -312,6 +312,8 @@ To start using it just click [here](https://symfony.vlamaz.com/).
 
 # 🔥 Symfony deployment to Platform.sh
 
+You can follow the [Official documentation](https://docs.platform.sh/guides/symfony.html).
+
 ## 1. Prerequisites
 
 1. **Platform.sh Account**: [Sign up](https://auth.api.platform.sh/register?trial_type=general) for a Platform.sh account if you don’t already have one.
@@ -440,6 +442,15 @@ scoop install platform
   
 
 ## Deploy with Platform UI:
+
+Follow the [Official documentation](https://docs.platform.sh/guides/symfony.html).
+
+Click the following button to deploy this project on Platform.sh,
+the official Symfony PaaS, so you can try it without installing anything locally:
+
+<p align="center">
+<a href="https://console.platform.sh/projects/create-project?template=https://raw.githubusercontent.com/symfonycorp/platformsh-symfony-template-metadata/main/symfony-demo.template.yaml&utm_content=symfonycorp&utm_source=github&utm_medium=button&utm_campaign=deploy_on_platform"><img src="https://platform.sh/images/deploy/lg-blue.svg" alt="Deploy on Platform.sh" width="180px" /></a>
+</p>
 
 1. Go to `https://console.platform.sh/projects/create-project/type` and Select the `Create from scratch` option.
 2. Fill the project details, AWS is recomended e.g.: `Europe - Sweeden (e5) - AWS`.
