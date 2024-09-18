@@ -157,7 +157,8 @@ If you are running the server locally, you can access the Swagger UI at [http://
 
 This is a frontend application created for testing purposes of the Symfony API server running on localhost and port `8000`.
 
-NOTE: If you deploy the Backend to prod, you also have this frontend server deployed to vercel [here](https://symfony.vlamaz.com/).
+> [!NOTE]  
+> If you have deployed your Backend to prod, you can also use this frontend server deployed to Vercel [here](https://symfony.vlamaz.com/).
 
 1. Keep the Symfony server running and open another terminal in the directory where you want to save this project, then download the it locally. You can go to the [frontend repository](https://github.com/SrVladyslav/symfony_crud_poc_frontend) and clone it to your local machine. Or just run:
 
@@ -312,7 +313,7 @@ To start using it just click [here](https://symfony.vlamaz.com/).
 
 # 🔥 Symfony deployment to Platform.sh
 
-You can also follow the [Official documentation](https://docs.platform.sh/guides/symfony.html) or use the configuration of this project
+You can also follow the [Official documentation](https://docs.platform.sh/guides/symfony.html).
 
 <p align="center">
 <a href="https://console.platform.sh/projects/create-project?template=https://raw.githubusercontent.com/symfonycorp/platformsh-symfony-template-metadata/main/symfony-demo.template.yaml&utm_content=symfonycorp&utm_source=github&utm_medium=button&utm_campaign=deploy_on_platform"><img src="https://platform.sh/images/deploy/lg-blue.svg" alt="Deploy on Platform.sh" width="180px" /></a>
@@ -321,7 +322,7 @@ You can also follow the [Official documentation](https://docs.platform.sh/guides
 ## 1. Prerequisites
 
 1. **Platform.sh Account**: [Sign up](https://auth.api.platform.sh/register?trial_type=general) for a Platform.sh account if you don’t already have one.
-2. **Platform.sh CLI [OPTIONAL]**: Install the Platform.sh CLI tool. Full instructions can be found [here](https://docs.platform.sh/administration/cli.html). Or if you are using Scoop, just run:
+2. **Platform.sh CLI**: Install the Platform.sh CLI tool. Full instructions can be found [here](https://docs.platform.sh/administration/cli.html). Or if you are using Scoop, just run:
 
 ```bash
 scoop bucket add platformsh https://github.com/platformsh/homebrew-tap.git
