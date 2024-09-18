@@ -468,7 +468,7 @@ scoop install platform
 
   Updates your database schema based on your Doctrine entity mappings.
 
-Some of the used migrations.
+Some of the used bundles.
 
 - **`composer require nelmio/cors-bundle`**
 - **`composer require nelmio/api-doc-bundle`**
