@@ -11,7 +11,7 @@
     <script>
         window.onload = function() {
             const ui = SwaggerUIBundle({
-                url: "http://localhost:8000/api/doc.json",
+                url: "{{ app_api_url }}/api/doc.json",
                 //url: '{{ asset('swagger.json') }}', 
                 dom_id: '#swagger-ui',
                 presets: [
