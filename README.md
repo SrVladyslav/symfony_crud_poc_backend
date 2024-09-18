@@ -310,28 +310,134 @@ To start using it just click [here](https://symfony.vlamaz.com/).
 
 <hr>
 
-# 🔥 Symfony deployment
+# 🔥 Symfony deployment to Platform.sh
 
-## Prerequisites
+## 1. Prerequisites
 
 1. **Platform.sh Account**: [Sign up](https://auth.api.platform.sh/register?trial_type=general) for a Platform.sh account if you don’t already have one.
-2. **Platform.sh CLI**: Install the Platform.sh CLI tool. Full instructions can be found [here](https://docs.platform.sh/administration/cli.html).
-   1. Install using Scoop:
+2. **Platform.sh CLI**: Install the Platform.sh CLI tool. Full instructions can be found [here](https://docs.platform.sh/administration/cli.html). Or if you are using Scoop, just run:
 
 ```bash
 scoop bucket add platformsh https://github.com/platformsh/homebrew-tap.git
 scoop install platform
 ```
 
-## Prepare Symfony Application
+## 2. Prepare Symfony Application
 
-1. Config SQLite:
-      
+1. Config SQLite, we will be using SQLite for our PoC, which is not recomended for a real production. Ensure that your `.env` file inclues:
+
+```bash
+DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
+```
+
+2. Ensure that `var` directory exists.
+
+## 3. Configure Platform.sh for Symfony
+
+1. Log in to Platform.sh
+
+```bash
+platform login
+```
+
+Follow the instructions to authenticate and connect your Platform.sh account.
+
+2. Create a New Project
+
+Official guide [here](https://docs.platform.sh/get-started/deploy/init.html).
+
+```bash
+platform project:create --title symfony_crud_poc --region eu-5.platform.sh
+```
+
+> [!NOTE]  
+> If asks for `Default branch (--default-branch)`, set it to `true`.
+
+> [!CAUTION]
+> When you create a new project on `Platform.sh` for the first time, a $${\color{red}1-Month \space Free \space Tier}$$ will also be activated. Please keep this in mind when starting your project.
+
+You can check your project info running:
+
+```bash
+platform project:list
+```
+
+3. Create a new environment
+
+```bash
+platform environment:create penv
+```
+
+> [!TIP]
+> In case you used the Platform.sh UI, you can link any repository to an existing Platform.sh project using the following command:
+> ```bash
+> symfony project:set-remote PROJECT_ID
+> ```
+
+4. Generate a sensible default Platform.sh configuration en case you don't have it:
+
+```bash
+symfony project:init
+```
+
+This generates the following set of configuration files: `.platform.app.yaml`, `.platform/services.yaml`, `.platform/routes.yaml`, and `php.ini`.
+
+5. Init the `git` with your own repository and push changes to your github project, more information [here](https://kbroman.org/github_tutorial/pages/init.html) and [here](https://git-scm.com/docs/git-init). In case you have a GitHub repo for the project, just type: 
+
+```bash
+git init
+git add .
+git commit -m "Add Platform.sh configuration"
+git push
+```
+
+> [!IMPORTANT]  
+> Delete the `.git` file before initializing your own.
+
+1. Create a `.platform.app.yaml` file in the root of your project with the following content:
+
+```yaml
+name: app
+type: 'php:8.3.11'
+build:
+    flavor: 'composer'
+web:
+    document_root: 'public'
+    locations:
+        '/':
+            root: 'public'
+            index: ['index.php']
+```
+
+
+> [!IMPORTANT]  
+> Adjust the PHP version if needed, and ensure the `document_root` is set to `public`.
+
+2. Add a `.platform/routes.yaml` file: Define routing rules for your application.
+
+```bash
+routes:
+    'http://{default}':
+        type: upstream
+        upstream: 'app:http'
+```
+
+## 4. Commit your changes
+
+
+
+
     
 
 
 ## Deploy with Platform CLI:
-1. Install CLI using 
+1. Install CLI using Scoop:
+
+```bash 
+scoop bucket add platformsh https://github.com/platformsh/homebrew-tap.git
+scoop install platform
+```
+  
 
 ## Deploy with Platform UI:
 
