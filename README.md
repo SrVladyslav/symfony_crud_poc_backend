@@ -155,10 +155,10 @@ If you are running the server locally, you can access the Swagger UI at [http://
 
 ![Dedicated NextJS Frontend](https://github.com/SrVladyslav/symfony_crud_poc_frontend/blob/main/public/images/frontend_view.png?raw=true)
 
-This is a frontend application created for testing purposes of the Symfony API server running on localhost and port `8000`.
+This is a frontend app created for testing purposes of the Symfony API server running on localhost at port `8000`.
 
 > [!NOTE]  
-> If you have deployed your Backend to prod, you can also use this frontend server deployed to Vercel on [https://symfony.vlamaz.com/](https://symfony.vlamaz.com/).
+> If you have deployed your Backend to PROD, you can also use this frontend deployed to Vercel on [https://symfony.vlamaz.com/](https://symfony.vlamaz.com/).
 
 1. Keep the Symfony server running and open another terminal in the directory where you want to save this project, then download the it locally. You can go to the [frontend repository](https://github.com/SrVladyslav/symfony_crud_poc_frontend) and clone it to your local machine. Or just run:
 
