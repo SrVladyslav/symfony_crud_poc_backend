@@ -2,11 +2,11 @@ This document provides an overview of the available API endpoints, their usage, 
 
 # ⚠️ API Important considerations
 
-- In the `GET` endpoints we **don't use pagination to keep this POC simple**, but in a real project we should implement it.
+- In the `GET` endpoints $${\color{yellow}we \space don't \space  use \space pagination \space in \space order \space to \space keep \space this \space POC \space simple}$$ , but in a real project we should implement it.
 
-- We suppose that each product must have a `category`, so you need to create **firsly a category before creating a product**.
+- We suppose that each product must have a `category`, so  $${\color{yellow}first \space you \space need \space to \space create \space a \space category \space before \space creating \space a \space product}$$.
 
-- The Many-To-One relation between `Category` and `Product` is implemented with `ON DELETE CASCADE`, so be carefull when deleting a category, all the products associated with it will be deleted as well.
+- The Many-To-One relation between `Category` and `Product` is implemented with `ON DELETE CASCADE`, so be carefull when deleting a category, $${\color{yellow}all \space the \space products \space associated \space with \space it \space will \space be \space deleted \space as \space well}$$.
 
 ## 🔑 Token-Based Authentication
 
@@ -72,20 +72,62 @@ DATABASE_URL="sqlite:///C:/<PATH_TO_PROJECT>/symfony_crud_poc/var/data.db"
 
 As you can see, we are using a SQLite database for the local project just to keep it simple, but you can also try Supabase.
 
-## Create the database
+## Database configuration
 
 First let's set permissions for the var directory
 
 ```bash
 chmod -R 755 var
+chmod -R 777 var
 ```
+
+### Prior configurations
+
+Before creating the Database, you should choose the DB to use, so in our case will be the SQLite, but you can use other ones if you want. 
+
+1. Let's config the doctrine yaml file, in your project open the `/config/packages/doctrine.yaml` file, and config the `drive` to use the one you prefer, In our case is `pdo_sqlite`. You should have something like this:
+
+```bash
+doctrine:
+    dbal:
+        # driver: 'pdo_pgsql' # You can also choose to use the PostgreSQL
+        driver: 'pdo_sqlite'
+        url: '%env(DATABASE_URL)%'
+```
+
+2. Now, if you are using the PHP first time, you should activate the database drivers, to do it, go to your php files in (Windows) and open the `php.ini` file: `C:\php\php.ini`.
+3. Once you are in `C:\php\php.ini`, open it with your favorite text editor and then de-coment the extensions of the db driver you want to use. for example, `pdo_pgsql` and `pgsql` for PostgreSQL or `sqlite3` and `pdo_sqlite` for SQLite. Filally you should have something like this:
+
+```bash
+      ...
+;extension=pdo_mysql
+extension=pdo_pgsql
+extension=pdo_sqlite
+extension=pgsql
+      ...
+;extension=sodium
+extension=sqlite3
+      ...
+
+``` 
+
+### Create the DB
 
 If the /var/data.db file does not exist, you can create the db file using the following commands:
 
 ```bash
 php bin/console doctrine:database:create
-php bin/console doctrine:schema:update --force
+php bin/console doctrine:schema:update --force 
 ```
+
+<details><summary><strong>👀 In case of: $${\color{red}SQLSTATE[HY000] [14] unable to open database file}$$ error.</strong></summary>
+
+- If:  `An exception occurred in the driver: SQLSTATE[HY000] [14] unable to open database file` appears, in this case, if you want to run a local server, the best way is to provide an absolute path to the db file. First go to your /var folder, open a terminal and run `pwd`, then go and edit the `DATABASE_URL` in the `.env` file, for example you should have something like: `DATABASE_URL="<YOUR_DB_DRIVER>:///C:/<PATH_TO_PROJECT>/symfony_crud_poc/var/data.db"`. Finally re-run the database:create code.
+    
+</details>
+
+
+
 
 Now we make our first migrations to the database, there may be no changes.
 
