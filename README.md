@@ -129,6 +129,9 @@ php bin/console doctrine:migrations:migrate
 
 Type `yes` when WARNING is prompted.
 
+> [!WARNING]  
+> Check the new migration File in the `/migrations` Folder, sometimes the generator could produce bad SQL code.
+
 ## Run the server
 
 ```bash
@@ -336,6 +339,28 @@ scoop install platform
 DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db" # NOT FOR PRODUCTION
 ```
 
+2. Configure the `CORS ORIGIN` in the `.env` file, by default is set to allow all pages, but this is not good for production:
+
+```bash
+CORS_ALLOW_ORIGIN='*' # Default, this is not secure
+
+CORS_ALLOW_ORIGIN='^https?://(<YOUR_URL>)(:[0-9]+)?$'
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 3. Configure Platform.sh for Symfony
 
 > [!IMPORTANT]  
@@ -380,6 +405,22 @@ You can check your project info running:
 ```bash
 platform project:list
 ```
+
+3. Commit changes and deploy to Platform.sh
+ 
+```bash
+git push -u platform main
+```
+
+
+
+
+
+
+
+
+
+
 
 
 1. Create a `.platform.app.yaml` file in the root of your project with the following content:
