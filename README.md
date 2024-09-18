@@ -312,12 +312,16 @@ To start using it just click [here](https://symfony.vlamaz.com/).
 
 # 🔥 Symfony deployment to Platform.sh
 
-You can follow the [Official documentation](https://docs.platform.sh/guides/symfony.html).
+You can also follow the [Official documentation](https://docs.platform.sh/guides/symfony.html) or use the configuration of this project
+
+<p align="center">
+<a href="https://console.platform.sh/projects/create-project?template=https://raw.githubusercontent.com/symfonycorp/platformsh-symfony-template-metadata/main/symfony-demo.template.yaml&utm_content=symfonycorp&utm_source=github&utm_medium=button&utm_campaign=deploy_on_platform"><img src="https://platform.sh/images/deploy/lg-blue.svg" alt="Deploy on Platform.sh" width="180px" /></a>
+</p>
 
 ## 1. Prerequisites
 
 1. **Platform.sh Account**: [Sign up](https://auth.api.platform.sh/register?trial_type=general) for a Platform.sh account if you don’t already have one.
-2. **Platform.sh CLI**: Install the Platform.sh CLI tool. Full instructions can be found [here](https://docs.platform.sh/administration/cli.html). Or if you are using Scoop, just run:
+2. **Platform.sh CLI [OPTIONAL]**: Install the Platform.sh CLI tool. Full instructions can be found [here](https://docs.platform.sh/administration/cli.html). Or if you are using Scoop, just run:
 
 ```bash
 scoop bucket add platformsh https://github.com/platformsh/homebrew-tap.git
