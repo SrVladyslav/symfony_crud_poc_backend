@@ -58,19 +58,17 @@ git clone https://github.com/SrVladyslav/symfony_crud_poc_backend.git
 2. Navigate to the project directory and install the required dependencies using Composer:
 
 ```bash
-cd symfony_crud_poc
+cd symfony_crud_poc_backend
 composer install
 ```
 
-3. Go to the `.env` file in the project root directory and add the following content:
+3. Go to the `.env` file in the project root directory and change the `API_TOKEN` in case you want to use your own one:
 
 ```bash
 API_TOKEN=mY-Very-Secret-Token
-
-DATABASE_URL="sqlite:///C:/<PATH_TO_PROJECT>/symfony_crud_poc/var/data.db"
 ```
 
-As you can see, we are using a SQLite database for the local project just to keep it simple, but you can also try Supabase.
+You can also try [Supabase](https://supabase.com/) which is using `PostgreSQL`.
 
 ## Database configuration
 
@@ -95,8 +93,7 @@ doctrine:
         url: '%env(DATABASE_URL)%'
 ```
 
-2. Now, if you are using the PHP first time, you should activate the database drivers, to do it, go to your php files in (Windows) and open the `php.ini` file: `C:\php\php.ini`.
-3. Once you are in `C:\php\php.ini`, open it with your favorite text editor and then de-coment the extensions of the db driver you want to use. for example, `pdo_pgsql` and `pgsql` for PostgreSQL or `sqlite3` and `pdo_sqlite` for SQLite. Filally you should have something like this:
+2. Now, if you are using the PHP first time, you should activate the database drivers, to do it, go to your php files, once you are in (Windows) `C:\php\php.ini`, open the file with your favorite text editor and then de-coment the extensions of the db drivers you want to use. for example, `pdo_pgsql` and `pgsql` for PostgreSQL or `sqlite3` and `pdo_sqlite` for SQLite. Filally you should have something like this:
 
 ```bash
       ...
@@ -109,7 +106,14 @@ extension=pgsql
 extension=sqlite3
       ...
 
-``` 
+```
+
+3. Once you decided the driver you will be using, go to the `.env` file and change the `DATABASE_URL` to one you want to use.  $${\color{yellow}By \space default \space is \space set \space to \space local \space SQLite}$$. So if you will be running it in local with SQLite, don't touch it.
+
+```bash
+DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db" # Default configuration
+DATABASE_URL="<YOUR_DRIVER>:///<PATH_TO_PROJECT_VAR>/var/data.db"
+```
 
 ### Create the DB
 
@@ -120,19 +124,21 @@ php bin/console doctrine:database:create
 php bin/console doctrine:schema:update --force 
 ```
 
-<details><summary><strong>👀 In case of: $${\color{red}SQLSTATE[HY000] [14] unable to open database file}$$ error.</strong></summary>
+<details><summary><strong>👀 In case of: $${\color{red}SQLSTATE[HY000] \space [14] \space unable \space to \space open \space database \space file}$$ error.</strong></summary>
 
-- If:  `An exception occurred in the driver: SQLSTATE[HY000] [14] unable to open database file` appears, in this case, if you want to run a local server, the best way is to provide an absolute path to the db file. First go to your /var folder, open a terminal and run `pwd`, then go and edit the `DATABASE_URL` in the `.env` file, for example you should have something like: `DATABASE_URL="<YOUR_DB_DRIVER>:///C:/<PATH_TO_PROJECT>/symfony_crud_poc/var/data.db"`. Finally re-run the database:create code.
+- If:  `An exception occurred in the driver: SQLSTATE[HY000] [14] unable to open database file` appears, in this case, if you want to run a local server, the best way is to provide an absolute path to the db file. First go to your /var folder, open the terminal, run `pwd` and copy the PATH, then go and edit the `DATABASE_URL` in the `.env` file, for example you should have something like: `DATABASE_URL="<YOUR_DB_DRIVER>:///C:/<PATH_FROM_PWD>/data.db"`. Finally re-run the database:create code.
     
 </details>
 
-
-
-
-Now we make our first migrations to the database, there may be no changes.
+Now make the migrations files by running:
 
 ```bash
 php bin/console doctrine:migrations:diff
+```
+
+Push the migrations to the DB by running:
+
+```bash
 php bin/console doctrine:migrations:migrate
 ```
 
@@ -149,18 +155,22 @@ symfony server:start
 
 ## 👉 Using Swagger UI
 
-If you are running the server locally, you can access the Swagger UI at [http://localhost:8000/api-docs](http://localhost:8000/api-docs). Once deployed, it will be available at `https://<your-domain>/api-docs`.
+If you are running the server locally, you can access the Swagger UI at [http://localhost:8000/api-docs](http://localhost:8000/api-docs). Once the server is deployed, it will be available at `https://<your-domain>/api-docs`. Remember that we are using AUTH Token, set the Bearer by clicking `Authorize` before using the Swagger UI.
 
 <!--
 </details>
 
-<details><summary><strong>🔥 Using Next.js Frontend Locally 🔥</strong></summary> -->
+<details><summary><strong>🔥 Using Dedicated Next.js Frontend Locally 🔥</strong></summary> -->
 
 <hr/>
 
 ## 🔥 Using Next.js Frontend Locally 🔥
 
-This server is meant to be used as a local development server for the frontend application with the Symfony API server running on port `8000`, you can change the port in the `.env.local` file.
+![Dedicated NextJS Frontend](https://github.com/SrVladyslav/symfony_crud_poc_frontend/blob/main/public/images/frontend_view.png?raw=true)
+
+This is a frontend application created for testing purposes of the Symfony API server running on localhost and port `8000`.
+
+NOTE: If you deploy the Backend to prod, you also have this frontend server deployed to vercel [here](https://symfony.vlamaz.com/).
 
 1. Download the project locally. You can go to the [frontend repository](https://github.com/SrVladyslav/symfony_crud_poc_frontend) and clone it to your local machine. Or just run:
 
@@ -322,7 +332,8 @@ To start using it just click [here](https://symfony.vlamaz.com/).
 
   Creates a new empty migration class. This is useful if you need to manually write custom migration logic instead of relying on `doctrine:migrations:diff` to generate migrations automatically.
 
+Some of the used migrations.
+
 - **`composer require nelmio/cors-bundle`**
-- **`php bin/console debug:router`**
 - **`composer require nelmio/api-doc-bundle`**
 - **`composer require asset`**
