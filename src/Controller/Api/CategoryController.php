@@ -22,6 +22,9 @@ use App\Dto\Responses\GetCategoryDto;
 use App\Dto\Responses\ErrorDto;
 use App\Dto\Responses\DeleteDto;
 
+// Pagination
+use Doctrine\ORM\Tools\Pagination\Paginator;
+
 
 #[Route('/api/categories', name: 'api_categories')]
 class CategoryController extends AbstractController
@@ -35,9 +38,9 @@ class CategoryController extends AbstractController
 
     // ============================================================================================================================ GET
     /**
-     * Retrieves all categories.
+     * Retrieves all categories along with their associated products using pagination.
      * 
-     * This endpoint requires a valid authentication token.
+     * This endpoint supports pagination through query parameters. This endpoint requires a valid authentication token.
      * 
      * @param CategoryRepository $categories The category repository.
      * @param Request $request The HTTP request containing the auth token.
@@ -45,7 +48,6 @@ class CategoryController extends AbstractController
      * @return Response JSON response with status, message, and category data.
      *                  Returns unauthorized if the token is invalid.
      * 
-     * Note: Pagination is suggested for future improvements.
      */
     #[OA\Response(response: Response::HTTP_INTERNAL_SERVER_ERROR, description: "Server Error", content: new OA\JsonContent(ref: new Model(type: ErrorDto::class)))]
     #[OA\Response(response: Response::HTTP_UNAUTHORIZED, description: "Unauthorized", content: new OA\JsonContent(ref: new Model(type: ErrorDto::class)))]
@@ -54,8 +56,10 @@ class CategoryController extends AbstractController
         response: Response::HTTP_OK, description: 'Successful response with a list of categories and their products',
         content: new OA\JsonContent(ref: new Model(type: GetAllCategoriesDto::class))
     )]
+    #[OA\Parameter(name: "page",in: "query", description: "The page number of the current page.", required: false, schema: new OA\Schema(type: "integer"))]
+    #[OA\Parameter(name: "limit",in: "query", description: "The maximum number of items per page.", required: false, schema: new OA\Schema(type: "integer"))]
     #[Route('/get', name: 'get_all', methods: ['GET'], format: 'json')]
-    public function getAllCategories(CategoryRepository $categories, Request $request): Response
+    public function getAllCategories(CategoryRepository $categoryRepository, Request $request): Response
     {
         // Authorization
         if (!$this->tokenService->isValidToken($request)) {
@@ -65,30 +69,42 @@ class CategoryController extends AbstractController
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        /** 
-         * TODO: In a full prod project, we should implement pagination: limit, page, totalPages, nextPage, prevPage etc...
-         *       But for now we will return all the data and keep it simple.
-         **/
-        
-        $allCategories = $categories->getCategories();
-        
-        // Pagination placeholder
-        // TODO: Implement pagination
-        $page = 1;
-        $limit = 10;
-        $totalPages = ceil(count($allCategories) / $limit);
+        // TODO: In a full prod project, we should add some more validations and personalized error handling: e.g. validate strings, so on... 
+        //       But for now we will keep it simple.
 
-        // We suppose that in case of an error we return an empty array, otherwise better error handling is needed
-        return $this->json(new GetAllCategoriesDto(
-            status: 'success',
-            message: 'Found successfully',
-            page: (string)$page,
-            limit: (string)$limit,
-            totalPages: (string)$totalPages,
-            prevPage: $page > 1 ? '/api/categories/get?page='.($page - 1) : null,
-            nextPage: $page < $totalPages ? '/api/categories/get?page='.($page + 1) : null,
-            data: $allCategories
-        ), Response::HTTP_OK);
+        // Pagination parameters
+        $page = (int) $request->query->get('page', 1);
+        $limit = (int) $request->query->get('limit', 3);
+        $limit = max(1, $limit);
+
+        try{
+            $paginator = $categoryRepository->getPaginatedCategories($page, $limit);
+
+            $totalItems = count($paginator);
+            $totalPages = ceil($totalItems / $limit);
+
+            // Build pagination links
+            $prevPage = $page > 1 ? '/api/categories/get?page=' . ($page - 1) . '&limit=' . $limit : null;
+            $nextPage = $page < $totalPages ? '/api/categories/get?page=' . ($page + 1) . '&limit=' . $limit : null;
+
+            // Prepare the response DTO
+            return $this->json(new GetAllCategoriesDto(
+                status: 'success',
+                message: 'Found successfully',
+                page: (string)$page,
+                limit: (string)$limit,
+                totalPages: (string)$totalPages,
+                prevPage: $prevPage,
+                nextPage: $nextPage,
+                data: $paginator->getIterator()->getArrayCopy()
+            ), Response::HTTP_OK);
+
+        } catch (\Exception $e) {
+            return $this->json([
+                'status' => 'error',
+                'message' => 'An error occurred: ' . $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
     
     // ============================================================================================================================ GET BY ID

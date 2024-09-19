@@ -24,6 +24,8 @@ use App\Dto\Responses\GetAllProductsDto;
 use App\Dto\Responses\ErrorDto;
 use App\Dto\Responses\DeleteDto;
 
+// Pagination
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 #[Route('api/products', name: 'api_products')]
 class ProductController extends AbstractController
@@ -37,7 +39,7 @@ class ProductController extends AbstractController
 
     // ============================================================================================================================ GET
     /**
-     * Retrieves all products along with their categories.
+     * Retrieves all products along with their categories using pagination.
      * 
      * This endpoint returns a list of all products with pagination details. 
      * The response includes the products and their associated categories, 
@@ -56,6 +58,8 @@ class ProductController extends AbstractController
         response: Response::HTTP_OK, description: 'Successful response with a list of products with their categories.',
         content: new OA\JsonContent(ref: new Model(type: GetAllProductsDto::class))
     )]
+    #[OA\Parameter(name: "page",in: "query", description: "The page number of the current page.", required: false, schema: new OA\Schema(type: "integer"))]
+    #[OA\Parameter(name: "limit",in: "query", description: "The maximum number of items per page.", required: false, schema: new OA\Schema(type: "integer"))]
     #[Route('/get', name: 'get_products', methods: ['GET'], format: 'json')]
     public function getAllProducts(ProductRepository $productRepository, Request $request): Response
     {
@@ -67,33 +71,44 @@ class ProductController extends AbstractController
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        /** 
-         * TODO: In a full prod project, we should implement pagination: limit, page, totalPages, nextPage, prevPage etc...
-         *       But for now we will return all the data and keep it simple.
-         **/
+        // TODO: In a full prod project, we should add some more validations and personalized error handling: e.g. validate strings, so on... 
+        //       But for now we will keep it simple.
 
-        $allProducts = $productRepository->getProducts();
-        
-        // Pagination placeholder
-        // TODO: Implement pagination
-        $page = 1;
-        $limit = 10;
-        $totalPages = ceil(count($allProducts) / $limit);
-        
-        // Here we use the groups serializers instead of using the DTO objects
-        // We suppose that in case of an error we return an empty array, otherwise better error handling is needed
-        return $this->json([
-            'status'=>'success',
-            'message'=>'Found successfully',
-            'page'=> (string)$page,
-            'limit'=> (string)$limit,
-            'totalPages'=> (string)$totalPages,
-            'prevPage'=> $page > 1 ? '/api/categories/get?page='.($page - 1) : null,
-            'nextPage'=> $page < $totalPages ? '/api/categories/get?page='.($page + 1) : null,
-            'data'=> $allProducts
-        ], context: [
-            AbstractNormalizer::GROUPS => ['get_products'],
-        ]);
+        // Pagination parameters
+        $page = (int) $request->query->get('page', 1);
+        $limit = (int) $request->query->get('limit', 3);
+        $limit = max(1, $limit);
+
+        try {
+            $paginator = $productRepository->getPaginatedProducts($page, $limit);
+
+            $totalItems = count($paginator);
+            $totalPages = ceil($totalItems / $limit);
+
+            // Build pagination links
+            $prevPage = $page > 1 ? '/api/products/get?page=' . ($page - 1) . '&limit=' . $limit : null;
+            $nextPage = $page < $totalPages ? '/api/products/get?page=' . ($page + 1) . '&limit=' . $limit : null;
+
+            // Prepare the response DTO
+            return $this->json(new GetAllProductsDto(
+                status: 'success',
+                message: 'Found successfully',
+                page: (string)$page,
+                limit: (string)$limit,
+                totalPages: (string)$totalPages,
+                prevPage: $prevPage,
+                nextPage: $nextPage,
+                data: $paginator->getIterator()->getArrayCopy()
+            ), Response::HTTP_OK, context: [
+                AbstractNormalizer::GROUPS => ['get_products'],
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->json([
+                'status' => 'error',
+                'message' => 'An error occurred: ' . $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     // ============================================================================================================================ GET BY ID

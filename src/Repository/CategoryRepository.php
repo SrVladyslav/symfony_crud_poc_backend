@@ -6,6 +6,7 @@ use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Dto\CategoryDto;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * @extends ServiceEntityRepository<Category>
@@ -18,14 +19,37 @@ class CategoryRepository extends ServiceEntityRepository
     }
 
     /**
-    * @return Category[] Returns an array of Category objects
-    
-    */
-    public function getCategories(): array
+     * Retrieves a paginated list of categories.
+     * 
+     * @param int $page  The current page number.
+     * @param int $limit The number of categories to retrieve per page.
+     * 
+     * @return Paginator A paginated list of categories ordered by name in ascending order.
+     */
+    public function getPaginatedCategories(int $page, int $limit): Paginator
     {
-        return $this->findAll() ?? [];
+        $query = $this->createQueryBuilder('c')
+            ->orderBy('c.name', 'ASC')
+            ->getQuery();
+
+        $query->setFirstResult($limit * ($page - 1))
+              ->setMaxResults($limit);
+
+        return new Paginator($query, true);
     }
 
+    /**
+     * Updates a category entity with new data if changes are detected.
+     * 
+     * This method compares the current category data with the new data and only
+     * persists the changes if they differ. If the data remains unchanged, it skips
+     * the update. Returns the updated category on success, or null if an error occurs.
+     * 
+     * @param Category $category The current category entity to be updated.
+     * @param CategoryDto $newCategoryData The new category data.
+     * 
+     * @return Category|null Returns the updated category or null if an error occurs.
+     */
     public function updateCategory( 
         Category $category, 
         CategoryDto $newCategoryData 
@@ -55,13 +79,11 @@ class CategoryRepository extends ServiceEntityRepository
     }
 
     /**
-     * Create a new category
+     * Creates a new category from the provided data and persists it to the database.
      * 
-     * @param string $name
-     * @param string $description
+     * @param CategoryDto $categoryDto The data transfer object containing category details.
      * 
-     * @return Category|null
-     * 
+     * @return Category The newly created category.
      */
     public function createCategory( CategoryDto $categoryDto ): Category
     {
@@ -75,12 +97,11 @@ class CategoryRepository extends ServiceEntityRepository
     }
 
     /**
-     * Delete a given category
+     * Deletes the specified category from the database.
      * 
-     * @param Category $category
+     * @param Category|null $category The category to delete, or null if not found.
      * 
-     * @return bool Returns true if the category was deleted, false otherwise
-     * 
+     * @return bool True if the category was successfully deleted, false otherwise.
      */
     public function deleteCategory( ?Category $category ): bool
     {

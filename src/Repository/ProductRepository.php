@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\CategoryRepository;
 use App\Dto\ProductDto;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * @extends ServiceEntityRepository<Product>
@@ -19,25 +20,32 @@ class ProductRepository extends ServiceEntityRepository
     }
 
     /**
-    * @return Product[] Returns an array of Product objects
-    */
-    public function getProducts(): array
+     * Retrieves a paginated list of products.
+     * 
+     * @param int $page  The current page number.
+     * @param int $limit The number of products to retrieve per page.
+     * 
+     * @return Paginator A paginated list of products ordered by name in ascending order.
+     */
+    public function getPaginatedProducts(int $page, int $limit): Paginator
     {
-        try {
-            return $this->findAll() ?? [];
-        } catch(\Exception $e) {
-            return [];
-        }
+        $query = $this->createQueryBuilder('p')
+            ->orderBy('p.name', 'ASC')
+            ->getQuery();
+
+        $query->setFirstResult($limit * ($page - 1))
+              ->setMaxResults($limit);
+
+        return new Paginator($query, true);
     }
 
     /**
-     * Create a new product
+     * Creates a new product based on the provided ProductDto and category repository.
      * 
-     * @param string $name
-     * @param string $description
-     * @param float $price
+     * @param ProductDto $productDto Data transfer object containing product details.
+     * @param CategoryRepository $categoryRepository Repository for managing category data.
      * 
-     * @return Product|null
+     * @return Product|null The newly created product, or null if an error occurred.
      */
     public function createProduct( ProductDto $productDto, CategoryRepository $categoryRepository ): Product|null
     {
@@ -55,13 +63,15 @@ class ProductRepository extends ServiceEntityRepository
     }
 
     /**
-     * Updates the product given the new cata
+     * Updates an existing product with the provided data.
      * 
-     * @param string $name
-     * @param string $description
-     * @param float $price
+     * @param Product $product The product entity to be updated.
+     * @param ProductDto $productDto Data transfer object containing new product details.
+     * @param CategoryRepository $categoryRepository Repository for category management.
      * 
-     * @return Product|null
+     * @return Product|null The updated product, or null if no changes were made or an error occurred.
+     * 
+     * @throws \Exception If the category is not found or an error occurs during the update process.
      */
     public function updateProduct(
         Product $product, 
@@ -110,11 +120,13 @@ class ProductRepository extends ServiceEntityRepository
     }
 
     /**
-     * Delete a given product
+     * Deletes a product from the database.
      * 
-     * @param Product $product
+     * @param Product|null $product The product entity to be deleted.
      * 
-     * @return bool Returns true if the product was deleted, false otherwise
+     * @return bool True if the deletion was successful, false otherwise.
+     * 
+     * @throws Exception If an error occurs during the deletion process.
      */
     public function deleteProduct( ?Product $product ): bool
     {
