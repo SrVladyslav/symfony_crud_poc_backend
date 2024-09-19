@@ -20,6 +20,7 @@ use OpenApi\Attributes as OA;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use App\Dto\Responses\UpdateProductDto;
 use App\Dto\Responses\GetProductDto;
+use App\Dto\Responses\GetAllProductsDto;
 use App\Dto\Responses\ErrorDto;
 use App\Dto\Responses\DeleteDto;
 
