@@ -462,6 +462,14 @@ git push -u platform main
 
   Updates your database schema based on your Doctrine entity mappings.
 
+- **`platform projects`**
+
+  Lists your projects info, like projectID
+
+- **`platform project:delete <project_id>`**
+
+  Deletes the Platform.sh project by its ID
+
 Some of the used bundles.
 
 - **`composer require nelmio/cors-bundle`**
