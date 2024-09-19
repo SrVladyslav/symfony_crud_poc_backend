@@ -15,6 +15,8 @@ This document provides an overview of the available API endpoints, their usage, 
 Authorization: Bearer mY-Very-Secret-Token
 ```
 
+<br/>
+
 # 🔥 Project setup
 
 <details>
@@ -38,34 +40,49 @@ Follow the official [Symfony CLI installation guide](https://symfony.com/downloa
 
 </details>
 
-## Clone the Symfony project locally
+## 1. Clone the Symfony project locally
 
-1. Clone the repository to your local machine using the following command:
+1.1. Clone the repository to your local machine using the following command:
 
 ```bash
 git clone https://github.com/SrVladyslav/symfony_crud_poc_backend.git
 ```
 
-2. Navigate to the project directory and install the required dependencies using Composer:
+1.2. Navigate to the project directory and install the required dependencies using Composer:
 
 ```bash
 cd symfony_crud_poc_backend
 composer install
 ```
 
-3. 🔑[OPTIONAL IF RUNNING LOCALLY]: For the sake of simplicity, we use the `.env` file in the project root directory to store the API AUTH Token in the `API_TOKEN` variable. Change the `API_TOKEN` in case you want to use your own one:
+1.3. 🔑[OPTIONAL IF RUNNING LOCALLY]: For the sake of simplicity, we use the `.env` file in the project root directory to store the API AUTH Token in the `API_TOKEN` variable. Change the `API_TOKEN` in case you want to use your own one:
 
 ```bash
 API_TOKEN=mY-Very-Secret-Token
 ```
 
-## Database configuration
+## 2. Database configuration
 
-### Prior configurations
+### 2.1. Prior configurations
 
-Before creating the Database, you should choose the DB to use, so in our case will be the SQLite, but you can use other ones if you want.
+2.1.1 By default this project is configured to use SQLite database for local PoC.
 
-1. [GO TO STEP 2 IF YOU WANT TO USE DEFAULT CONFIG]: Let's config the doctrine yaml file, in your project open the `/config/packages/doctrine.yaml` file, and edit the `driver` to use the one you prefer. We use `pdo_sqlite` by default:
+⚠️ $${\color{yellow}If \space this \space is \space the \space first \space time \space you \space are \space using \space PHP}$$ ⚠️, you should activate the database drivers:
+   - Locate your `php.ini` File: on Windows is located here `C:\php\php.ini`.
+   - Edit the file using your preferred text editor and uncomment the required extensions by removing the leading `;`. For example, `pdo_pgsql` and `pgsql` for PostgreSQL or `sqlite3` and `pdo_sqlite` for SQLite (Default). After saving the file, your configuration should now include the necessary drivers, like this:
+
+```bash
+      ...
+;extension=pdo_pgsql
+extension=pdo_sqlite
+      ...
+extension=sqlite3
+      ...
+```
+
+<details><summary><strong> $${\color{yellow}[OPTIONAL]: \space In \space case \space you \space change \space the \space default \space SQLite \space DB, \space do \space this:}$$</strong></summary>
+    
+Let's config the doctrine yaml file, in your project open the `/config/packages/doctrine.yaml` file, and edit the `driver` to use the one you prefer. We use `pdo_sqlite` by default. Remember that in order to use the driver, you should activate it first in `C:\php\php.ini` file. 
 
 ```bash
 doctrine:
@@ -75,35 +92,18 @@ doctrine:
         url: '%env(DATABASE_URL)%'
 ```
 
-2. ⚠️ $${\color{yellow}If \space this \space is \space the \space first \space time \space you \space are \space using \space PHP}$$ ⚠️, you should activate the database drivers:
-   - Locate your `php.ini` File: on Windows, `C:\php\php.ini`.
-   - Edit the file using your preferred text editor and uncomment the required extensions by removing the leading `;`. For example, `pdo_pgsql` and `pgsql` for PostgreSQL or `sqlite3` and `pdo_sqlite` for SQLite. After saving the file, your configuration should now include the necessary drivers, like this:
-
-```bash
-      ...
-;extension=pdo_mysql
-extension=pdo_pgsql
-extension=pdo_sqlite
-extension=pgsql
-      ...
-;extension=sodium
-extension=sqlite3
-      ...
-
-```
-
-3. Once you decided the driver you will be using, go to the `.env` file and change the `DATABASE_URL` to one you want to use. $${\color{yellow}By \space default \space is \space set \space to \space local \space SQLite}$$, so if you will be running it in local with SQLite, don't touch it.
+2.1.2. Once you decided the driver you will be using, go to the `.env` file and change the `DATABASE_URL` to one you want to use.
 
 ```bash
 DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db" # Default configuration
 DATABASE_URL="<YOUR_DRIVER>:///<PATH_TO_PROJECT_VAR>/var/data.db"
 ```
 
-You can also try [Supabase](https://supabase.com/) which is using `PostgreSQL`.
+</details>
 
-### Create the DB
+### 2.2. Create the DB
 
-If the /var/data.db file does not exist, you can create the db file using the following commands:
+2.2.1. If the /var/data.db file does not exist, you can create the db file using the following command:
 
 ```bash
 php bin/console doctrine:database:create
@@ -115,13 +115,67 @@ php bin/console doctrine:database:create
 
 </details>
 
-Now make the migrations files by running:
+<details><summary><strong>[OPTIONAL]: Migrate the database if you modify its tables</strong></summary>
+
+2.1.1. When making migrations, you need to check the migration code before migrating to DB (`/migrations/<migration>.php`) File, sometimes the generated code is not correct.
+On the other hand, we were using SQLite in local, but in prod you should use something else, in this case, we used PostgreSQL.
+So, we need to check the code and change it to match the DB, for example take a look at the migration code:
+
+```php
+public function up(Schema $schema): void
+{
+    // Detect if we are using PostgreSQL
+    if ($this->connection->getDatabasePlatform()->getName() === 'postgresql') {
+        $this->addSql('CREATE TABLE category (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(128) NOT NULL,
+            description TEXT DEFAULT NULL
+        )');
+        $this->addSql('CREATE TABLE product (
+            id SERIAL PRIMARY KEY,
+            category_id INTEGER DEFAULT NULL,
+            name VARCHAR(128) NOT NULL,
+            description TEXT DEFAULT NULL,
+            price DOUBLE PRECISION NOT NULL,
+            CONSTRAINT FK_D34A04AD12469DE2 FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE
+        )');
+        $this->addSql('CREATE INDEX IDX_D34A04AD12469DE2 ON product (category_id)');
+    }
+    // Detect if we are using SQLite
+    elseif ($this->connection->getDatabasePlatform()->getName() === 'sqlite') {
+        $this->addSql('CREATE TABLE category (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name VARCHAR(128) NOT NULL,
+            description TEXT DEFAULT NULL
+        )');
+        $this->addSql('CREATE TABLE product (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            category_id INTEGER DEFAULT NULL,
+            name VARCHAR(128) NOT NULL,
+            description TEXT DEFAULT NULL,
+            price DOUBLE PRECISION NOT NULL,
+            CONSTRAINT FK_D34A04AD12469DE2 FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE
+        )');
+        $this->addSql('CREATE INDEX IDX_D34A04AD12469DE2 ON product (category_id)');
+    }
+}
+```
+
+You can see that we are using `SERIAL` for the `id` column in PostgreSQ, but in SQLite we are using `INTEGER` as well as `AUTOINCREMENT`, so we need to change the code to match the DB.
+
+2.2. To make migrations to the table, run:
 
 ```bash
 php bin/console doctrine:migrations:diff
 ```
 
-Push the migrations to the DB by running:
+</details>
+
+> [!TIP]  
+> Always check the new migration file in the `/migrations` folder after creating new onew, sometimes the generator produces bad SQL code.
+
+2.2.2. Migrate the migrations to the DB by running:
+If you're using the default configuration, 
 
 ```bash
 php bin/console doctrine:migrations:migrate
@@ -129,47 +183,40 @@ php bin/console doctrine:migrations:migrate
 
 Type `yes` when WARNING is prompted.
 
-> [!WARNING]  
-> Check the new migration File in the `/migrations` Folder, sometimes the generator could produce bad SQL code.
-
-## Run the server
+## 3. Run the server
 
 ```bash
 symfony server:start
 ```
 
+<br/>
+
 # 🚀 Testing the API Endpoints
 
-## 👉 Using Swagger UI
+## 1. 👉 Using Swagger UI
 
 If you are running the server locally, you can access the Swagger UI at [http://localhost:8000/api-docs](http://localhost:8000/api-docs). Once the server is deployed, it will be available at `https://<your-domain>/api-docs`. Remember that we are using AUTH Token, set the Bearer by clicking `Authorize` before using the Swagger UI.
 
-
-<hr/>
-
-## 🔥 Using Next.js Frontend Locally 🔥
+## 2. 🔥 Using Next.js Frontend Locally 🔥
 
 ![Dedicated NextJS Frontend](https://github.com/SrVladyslav/symfony_crud_poc_frontend/blob/main/public/images/frontend_view.png?raw=true)
 
 This is a frontend app created for testing purposes of the Symfony API server running on localhost at port `8000`.
 
-> [!NOTE]  
-> If you have deployed your Backend to PROD, you can also use this frontend deployed to Vercel on [https://symfony.vlamaz.com/](https://symfony.vlamaz.com/).
-
-1. Keep the Symfony server running and open another terminal in the directory where you want to save this project, then download the it locally. You can go to the [frontend repository](https://github.com/SrVladyslav/symfony_crud_poc_frontend) and clone it to your local machine. Or just run:
+2.1. Keep the Symfony server running and open another terminal in the directory where you want to save this project, then download the it locally. You can go to the [frontend repository](https://github.com/SrVladyslav/symfony_crud_poc_frontend) and clone it to your local machine. Or just run:
 
 ```bash
 git clone https://github.com/SrVladyslav/symfony_crud_poc_frontend.git
 ```
 
-2. Navigate to the project directory and install the required dependencies using npm:
+2.2. Navigate to the project directory and install the required dependencies using npm:
 
 ```bash
 cd symfony_crud_poc_frontend
 npm install
 ```
 
-3. Start the development server or create a build, which has better performance:
+2.3. Start the development server or create a build, which has better performance:
 
 ```bash
 npm run dev
@@ -182,12 +229,12 @@ npm run build
 npm run start
 ```
 
-Finally, open your browser on [`http://localhost:3000/`](http://localhost:3000/)
+2.4. Finally, open your browser on [`http://localhost:3000/`](http://localhost:3000/) and start using the endpoints.
 
-4. Now you can try out the API endpoints, by default it will try to connect to the local server running on port `http://localhost:8000`, but you can change this URL using the input on TOP and clicking the `Change URL` button.
+> [!NOTE]  
+> If you have deployed your Backend to PROD, you can also use this frontend deployed to Vercel on [https://symfony.vlamaz.com/](https://symfony.vlamaz.com/), all you need to do is input the new PROD url and click `Change URL` button.
 
-
-<hr/>
+## 3. More options
 
 <details>
 <summary><strong>Using Postman</strong></summary>
@@ -274,17 +321,10 @@ Example Response:
 
 </details>
 
-<details><summary><strong>Using Next.js Frontend deployed on Vercel</strong></summary>
+## 4. 🗺 Available endpoints
 
-This is a deployed version of the [frontend repository](https://github.com/SrVladyslav/symfony_crud_poc_frontend) on Vercel which is connected to the Symfony API server running on `platform.sh`.
-
-To start using it just click [here](https://symfony.vlamaz.com/).
-
-</details>
-
-## 🗺 Endpoints
-
-### Category Endpoints
+<details>
+<summary><strong>4.1 Category Endpoints</strong></summary>
 
 | Endpoint                      | Method | Description                                                               |
 | ----------------------------- | ------ | ------------------------------------------------------------------------- |
@@ -293,8 +333,11 @@ To start using it just click [here](https://symfony.vlamaz.com/).
 | `/api/categories/create`      | POST   | Creates a new category with the provided details.                         |
 | `/api/categories/{id}/update` | PUT    | Updates the category identified by the given `id` with the provided data. |
 | `/api/categories/{id}/delete` | DELETE | Deletes the category identified by the given `id`.                        |
+    
+</details>
 
-### Products Endpoints
+<details>
+<summary><strong>4.2 Products Endpoints</strong></summary>
 
 | Endpoint                    | Method | Description                                                          |
 | --------------------------- | ------ | -------------------------------------------------------------------- |
@@ -304,7 +347,9 @@ To start using it just click [here](https://symfony.vlamaz.com/).
 | `/api/products/{id}/update` | PUT    | Updates the product with the specified `id` using the provided data. |
 | `/api/products/{id}/delete` | DELETE | Deletes the product identified by the given `id`.                    |
 
-<hr>
+</details>
+
+<br/>
 
 # 🔥 Symfony deployment to Platform.sh
 
@@ -312,8 +357,8 @@ You can also follow the [Official documentation](https://docs.platform.sh/guides
 
 ## 1. Prerequisites
 
-1. **Platform.sh Account**: [Sign up](https://auth.api.platform.sh/register?trial_type=general) for a Platform.sh account if you don’t already have one.
-2. **Platform.sh CLI**: Install the Platform.sh CLI tool. Full instructions can be found [here](https://docs.platform.sh/administration/cli.html). Or if you are using Scoop, just run:
+1.1. **Platform.sh Account**: [Sign up](https://auth.api.platform.sh/register?trial_type=general) for a Platform.sh account if you don’t already have one.
+1.2. **Platform.sh CLI**: Install the Platform.sh CLI tool. Full instructions can be found [here](https://docs.platform.sh/administration/cli.html). Or if you are using Scoop, just run:
 
 ```bash
 scoop bucket add platformsh https://github.com/platformsh/homebrew-tap.git
@@ -325,7 +370,7 @@ scoop install platform
 > [!NOTE]  
 > This project already has all the Platform.sh configuration files.
 
-1. Configure the `API_TOKEN`, `CORS ORIGIN` and the `APP_API_PRODUCTION_URL` in the `.env` file:
+2.1. Configure the `API_TOKEN`, `CORS ORIGIN` and the `APP_API_PRODUCTION_URL` in the `.env` file:
 
 ```bash
 API_TOKEN=mY-Very-Secret-Token # Set some good token
@@ -338,79 +383,28 @@ CORS_ALLOW_ORIGIN='*' # This is not good for production
 APP_API_PRODUCTION_URL=<YOUR_PRODUCTION_URL_HERE> # You can modify this once deployed the first time, so you will know your URL
 ```
 
-<details><summary><strong>[OPTIONAL]: Migrate the database if you modify something in it</strong></summary>
-
-When making migrations, you need to check the migration code before migrating to DB (`/migrations/<migration>.php`) File, sometimes the generated code is not correct.
-On the other hand, we were using SQLite in local, but in prod you should use something else, in this case, we used PostgreSQL.
-So, we need to check the code and change it to match the DB, for example take a look at the migration code:
-
-```php
-public function up(Schema $schema): void
-{
-    // Detect if we are using PostgreSQL
-    if ($this->connection->getDatabasePlatform()->getName() === 'postgresql') {
-        $this->addSql('CREATE TABLE category (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(128) NOT NULL,
-            description TEXT DEFAULT NULL
-        )');
-        $this->addSql('CREATE TABLE product (
-            id SERIAL PRIMARY KEY,
-            category_id INTEGER DEFAULT NULL,
-            name VARCHAR(128) NOT NULL,
-            description TEXT DEFAULT NULL,
-            price DOUBLE PRECISION NOT NULL,
-            CONSTRAINT FK_D34A04AD12469DE2 FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE
-        )');
-        $this->addSql('CREATE INDEX IDX_D34A04AD12469DE2 ON product (category_id)');
-    }
-    // Detect if we are using SQLite
-    elseif ($this->connection->getDatabasePlatform()->getName() === 'sqlite') {
-        $this->addSql('CREATE TABLE category (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name VARCHAR(128) NOT NULL,
-            description TEXT DEFAULT NULL
-        )');
-        $this->addSql('CREATE TABLE product (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            category_id INTEGER DEFAULT NULL,
-            name VARCHAR(128) NOT NULL,
-            description TEXT DEFAULT NULL,
-            price DOUBLE PRECISION NOT NULL,
-            CONSTRAINT FK_D34A04AD12469DE2 FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE
-        )');
-        $this->addSql('CREATE INDEX IDX_D34A04AD12469DE2 ON product (category_id)');
-    }
-}
-```
-
-You can see that we are using `SERIAL` for the `id` column in PostgreSQ, but in SQLite we are using `INTEGER` as well as `AUTOINCREMENT`, so we need to change the code to match the DB.
-
-</details>
-
-
-
 ## 3. Configure Platform.sh for Symfony
 
 > [!IMPORTANT]  
 > Delete the `.git` file before initializing your own, then init your Git Hub repository.
+>
+> ```bash
+> git init
+> git add .
+> git commit -m "First commit"
+> git branch -M main
+> git remote add origin https://github.com/<YOUR_GIT_HUB_USER>/<PROJECT_NAME>.git
+> git push -u origin main
+> ```
+> 
 
-```bash
-git init
-git add .
-git commit -m "First commit"
-git branch -M main
-git remote add origin https://github.com/<YOUR_GIT_HUB_USER>/<PROJECT_NAME>.git
-git push -u origin main
-```
-
-1. Log in to Platform.sh: Follow the instructions to authenticate and connect your Platform.sh account.
+3.1. Log into Platform.sh: Follow the instructions to authenticate and connect your Platform.sh account.
 
 ```bash
 platform login
 ```
 
-2. Create a New Project, official guide [here](https://docs.platform.sh/get-started/deploy/init.html). If asks for `Default branch (--default-branch)`, set it to `true`.
+3.2. Create a New Project, official guide [here](https://docs.platform.sh/get-started/deploy/init.html). If asks for `Default branch (--default-branch)`, set it to `true`.
 
 ```bash
 platform project:create --title symfony_crud_poc --region eu-5.platform.sh
@@ -426,19 +420,36 @@ platform project:create --title symfony_crud_poc --region eu-5.platform.sh
 > [!CAUTION]
 > When you create a new project on `Platform.sh` for the first time, a $${\color{red}1-Month \space Free \space Tier}$$ will also be activated. Please keep this in mind when starting your project.
 
-You can check your project info running:
+3.2.1. You can check your project info running:
 
 ```bash
 platform project:list
 ```
 
-3. Commit changes and deploy to Platform.sh
+3.3. Commit changes and deploy to Platform.sh
 
 ```bash
+git add .
+git commit -m "Add Platform.sh configuration"
 git push -u platform main
 ```
 
+3.4. Now let's update the `APP_API_PRODUCTION_URL=<YOUR_PRODUCTION_URL_HERE>` variable in `.env`:
+3.4.1. Go to the [Platform.sh console](https://console.platform.sh/) of your project.
+3.4.2. Copy your project URL, check the image below:
+
+3.4.3. Now edit the `APP_API_PRODUCTION_URL=<YOUR_PRODUCTION_URL_HERE>` variable in `.env` and push the changes:
+
+```bash
+git add .
+git commit -m "ENV changes"
+git push -u platform main
+```
+
+Congratulations! You are now running your API server.
+
 <hr/>
+<br/>
 
 # Useful Commands
 
