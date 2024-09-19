@@ -93,17 +93,18 @@ class ProductController extends AbstractController
             $prevPage = $page > 1 ? '/api/products/get?page=' . ($page - 1) . '&limit=' . $limit : null;
             $nextPage = $page < $totalPages ? '/api/products/get?page=' . ($page + 1) . '&limit=' . $limit : null;
 
-            // Prepare the response DTO
-            return $this->json(new GetAllProductsDto(
-                status: 'success',
-                message: 'Found successfully',
-                page: (string)$page,
-                limit: (string)$limit,
-                totalPages: (string)$totalPages,
-                prevPage: $prevPage,
-                nextPage: $nextPage,
-                data: $paginator->getIterator()->getArrayCopy()
-            ), Response::HTTP_OK, context: [
+            // Here we use the groups serializers instead of using the DTO objects
+            // We suppose that in case of an error we return an empty array, otherwise better error handling is needed
+            return $this->json([
+                'status'=>'success',
+                'message'=> 'Found successfully',
+                'page'=> (string)$page,
+                'limit'=> (string)$limit,
+                'totalPages'=> (string)$totalPages,
+                'prevPage'=> $prevPage,
+                'nextPage'=> $nextPage,
+                'data'=> $paginator->getIterator()->getArrayCopy()
+            ], context: [
                 AbstractNormalizer::GROUPS => ['get_products'],
             ]);
 
