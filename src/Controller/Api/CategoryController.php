@@ -38,7 +38,7 @@ class CategoryController extends AbstractController
 
     // ============================================================================================================================ GET
     /**
-     * Retrieves all categories along with their associated products using pagination.
+     * Retrieves all categories along with their associated products using pagination. Max items limit per page is 50.
      * 
      * This endpoint supports pagination through query parameters. This endpoint requires a valid authentication token.
      * 
@@ -73,8 +73,12 @@ class CategoryController extends AbstractController
         //       But for now we will keep it simple.
 
         // Pagination parameters
+        $maxLimit = isset($_ENV['PAGINATION_MAX_LIMIT']) ? (int)$_ENV['MAX_LIMIT'] : 50;
         $page = (int) $request->query->get('page', 1);
-        $limit = (int) $request->query->get('limit', 3);
+        $limit = (int) $request->query->get('limit', $maxLimit);
+        // Ensure the limit does not exceed the maximum limit
+        $limit = min($limit, $maxLimit);
+        // Ensure the limit is at least 1
         $limit = max(1, $limit);
 
         try{
