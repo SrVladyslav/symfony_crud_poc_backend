@@ -117,7 +117,7 @@ php bin/console doctrine:database:create
 
 <details><summary><strong>[OPTIONAL]: Migrate the database if you modify its tables</strong></summary>
 
-2.1.1. When making migrations, you need to check the migration code before migrating to DB (`/migrations/<migration>.php`) File, sometimes the generated code is not correct.
+2.2.1. When making migrations, you need to check the migration code before migrating to DB (`/migrations/<migration>.php`) File, sometimes the generated code is not correct.
 On the other hand, we were using SQLite in local, but in prod you should use something else, in this case, we used PostgreSQL.
 So, we need to check the code and change it to match the DB, for example take a look at the migration code:
 
@@ -189,6 +189,8 @@ Type `yes` when WARNING is prompted.
 symfony server:start
 ```
 
+🎉Congratulations!🎉: Now you are running the Symfony server locally.
+
 <br/>
 
 # 🚀 Testing the API Endpoints
@@ -228,6 +230,8 @@ or
 npm run build
 npm run start
 ```
+
+🎉Congratulations!🎉: Now you are running your frontend server.
 
 2.4. Finally, open your browser on [`http://localhost:3000/`](http://localhost:3000/) and start using the endpoints.
 
@@ -414,7 +418,11 @@ platform project:create --title symfony_crud_poc --region eu-5.platform.sh
 > In case you used the Platform.sh UI, you can link any repository to an existing Platform.sh project using the following command:
 >
 > ```bash
-> symfony project:set-remote PROJECT_ID
+> symfony project:set-remote <PROJECT_ID>
+>
+> # or
+> 
+> platform project:set-remote <PROJECT_ID>
 > ```
 
 > [!CAUTION]
@@ -438,6 +446,12 @@ git push -u platform main
 3.4.1. Go to the [Platform.sh console](https://console.platform.sh/) of your project.
 3.4.2. Copy your project URL, check the image below:
 
+<center>
+
+![Platform project console](https://github.com/SrVladyslav/symfony_crud_poc_frontend/blob/main/public/images/platform_console.png?raw=true)
+
+</center>
+
 3.4.3. Now edit the `APP_API_PRODUCTION_URL=<YOUR_PRODUCTION_URL_HERE>` variable in `.env` and push the changes:
 
 ```bash
@@ -446,7 +460,17 @@ git commit -m "ENV changes"
 git push -u platform main
 ```
 
-Congratulations! You are now running your API server.
+🎉Congratulations!🎉: You are now running your API server.
+
+<br/>
+
+# 🚀 Test the deployed backend endpoints
+
+![Frontend from vercel](https://github.com/SrVladyslav/symfony_crud_poc_frontend/blob/main/public/images/prod_frontend.png?raw=true)
+
+- The easiest way is to use the `NextJS` frontend deployed to Vercel, just go to [https://symfony.vlamaz.com/](https://symfony.vlamaz.com/), paste your platform.sh project URL in the input, click `Change URL` button and reload the page. Voilà, now you can use your backend perfectly!
+
+- The other way is to use the backend Swagger, just go to `/api-docs`.
 
 <hr/>
 <br/>
@@ -490,4 +514,3 @@ Some of the used bundles.
 - **`composer require symfony/maker-bundle`**
 - **`composer require doctrine/doctrine-bundle`**
 - **`composer require doctrine/dbal`**
-# poc
