@@ -330,7 +330,7 @@ class ProductController extends AbstractController
         }
 
         /**
-         * TODO: Create to check if a given user with this token can delete
+         * TODO: e.g. Create to check if a given user with this token can delete
          * this product
          **/ 
 
