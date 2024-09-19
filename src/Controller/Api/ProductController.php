@@ -75,7 +75,7 @@ class ProductController extends AbstractController
         //       But for now we will keep it simple.
 
         // Pagination parameters
-        $maxLimit = isset($_ENV['PAGINATION_MAX_LIMIT']) ? (int)$_ENV['MAX_LIMIT'] : 50;
+        $maxLimit = isset($_ENV['PAGINATION_MAX_LIMIT']) ? (int)$_ENV['PAGINATION_MAX_LIMIT'] : 50;
         $page = (int) $request->query->get('page', 1);
         $limit = (int) $request->query->get('limit', $maxLimit);
         // Ensure the limit does not exceed the maximum limit
