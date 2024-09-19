@@ -140,17 +140,10 @@ symfony server:start
 
 # 🚀 Testing the API Endpoints
 
-<!-- <details>
-<summary><strong>👉 Using Swagger UI</strong></summary> -->
-
 ## 👉 Using Swagger UI
 
 If you are running the server locally, you can access the Swagger UI at [http://localhost:8000/api-docs](http://localhost:8000/api-docs). Once the server is deployed, it will be available at `https://<your-domain>/api-docs`. Remember that we are using AUTH Token, set the Bearer by clicking `Authorize` before using the Swagger UI.
 
-<!--
-</details>
-
-<details><summary><strong>🔥 Using Dedicated Next.js Frontend Locally 🔥</strong></summary> -->
 
 <hr/>
 
@@ -193,7 +186,6 @@ Finally, open your browser on [`http://localhost:3000/`](http://localhost:3000/)
 
 4. Now you can try out the API endpoints, by default it will try to connect to the local server running on port `http://localhost:8000`, but you can change this URL using the input on TOP and clicking the `Change URL` button.
 
-<!-- </details> -->
 
 <hr/>
 
@@ -316,7 +308,7 @@ To start using it just click [here](https://symfony.vlamaz.com/).
 
 # 🔥 Symfony deployment to Platform.sh
 
-Follow the [Official documentation](https://docs.platform.sh/guides/symfony.html) to get started with Symfony and Platform.sh.
+You can also follow the [Official documentation](https://docs.platform.sh/guides/symfony.html) to get started with Symfony and Platform.sh.
 
 ## 1. Prerequisites
 
@@ -343,12 +335,10 @@ API_TOKEN=mY-Very-Secret-Token # Set some good token
 CORS_ALLOW_ORIGIN='*' # This is not good for production
 
 # The URL of the API: CHANGE FOR PRODUCTION. Is user for Swagger server.
-APP_API_PRODUCTION_URL=<YOUR_PRODUCTION_URL_HERE>
+APP_API_PRODUCTION_URL=<YOUR_PRODUCTION_URL_HERE> # You can modify this once deployed the first time, so you will know your URL
 ```
 
-2. If you modify the database
-
-<details><summary><strong>Migrate the database</strong></summary>
+<details><summary><strong>[OPTIONAL]: Migrate the database if you modify something in it</strong></summary>
 
 When making migrations, you need to check the migration code before migrating to DB (`/migrations/<migration>.php`) File, sometimes the generated code is not correct.
 On the other hand, we were using SQLite in local, but in prod you should use something else, in this case, we used PostgreSQL.
@@ -396,6 +386,10 @@ public function up(Schema $schema): void
 
 You can see that we are using `SERIAL` for the `id` column in PostgreSQ, but in SQLite we are using `INTEGER` as well as `AUTOINCREMENT`, so we need to change the code to match the DB.
 
+</details>
+
+
+
 ## 3. Configure Platform.sh for Symfony
 
 > [!IMPORTANT]  
@@ -416,9 +410,7 @@ git push -u origin main
 platform login
 ```
 
-2. Create a New Project
-
-Official guide [here](https://docs.platform.sh/get-started/deploy/init.html).
+2. Create a New Project, official guide [here](https://docs.platform.sh/get-started/deploy/init.html). If asks for `Default branch (--default-branch)`, set it to `true`.
 
 ```bash
 platform project:create --title symfony_crud_poc --region eu-5.platform.sh
@@ -430,9 +422,6 @@ platform project:create --title symfony_crud_poc --region eu-5.platform.sh
 > ```bash
 > symfony project:set-remote PROJECT_ID
 > ```
-
-> [!NOTE]  
-> If asks for `Default branch (--default-branch)`, set it to `true`.
 
 > [!CAUTION]
 > When you create a new project on `Platform.sh` for the first time, a $${\color{red}1-Month \space Free \space Tier}$$ will also be activated. Please keep this in mind when starting your project.
@@ -449,60 +438,9 @@ platform project:list
 git push -u platform main
 ```
 
-1. Create a `.platform.app.yaml` file in the root of your project with the following content:
+<hr/>
 
-```yaml
-name: app
-type: "php:8.3.11"
-build:
-  flavor: "composer"
-web:
-  document_root: "public"
-  locations:
-    "/":
-      root: "public"
-      index: ["index.php"]
-```
-
-> [!IMPORTANT]  
-> Adjust the PHP version if needed, and ensure the `document_root` is set to `public`.
-
-2. Add a `.platform/routes.yaml` file: Define routing rules for your application.
-
-```bash
-routes:
-    'http://{default}':
-        type: upstream
-        upstream: 'app:http'
-```
-
-## 4. Commit your changes
-
-## Deploy with Platform CLI:
-
-1. Install CLI using Scoop:
-
-```bash
-scoop bucket add platformsh https://github.com/platformsh/homebrew-tap.git
-scoop install platform
-```
-
-## Deploy with Platform UI:
-
-Follow the [Official documentation](https://docs.platform.sh/guides/symfony.html).
-
-Click the following button to deploy this project on Platform.sh,
-the official Symfony PaaS, so you can try it without installing anything locally:
-
-<p align="center">
-<a href="https://console.platform.sh/projects/create-project?template=https://raw.githubusercontent.com/symfonycorp/platformsh-symfony-template-metadata/main/symfony-demo.template.yaml&utm_content=symfonycorp&utm_source=github&utm_medium=button&utm_campaign=deploy_on_platform"><img src="https://platform.sh/images/deploy/lg-blue.svg" alt="Deploy on Platform.sh" width="180px" /></a>
-</p>
-
-1. Go to `https://console.platform.sh/projects/create-project/type` and Select the `Create from scratch` option.
-2. Fill the project details, AWS is recomended e.g.: `Europe - Sweeden (e5) - AWS`.
-3.
-
-### Useful Commands
+# Useful Commands
 
 - **`symfony server:start`**
 
