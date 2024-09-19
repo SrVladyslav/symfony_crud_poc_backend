@@ -333,32 +333,68 @@ scoop install platform
 > [!NOTE]  
 > This project already has all the Platform.sh configuration files.
 
-1. We were using SQLite for our PoC, which is not recomended for a real production project, please, ensure that your `.env` file is updated with good DATABASE_URL:
+1. Configure the `API_TOKEN`, `CORS ORIGIN` and the `APP_API_PRODUCTION_URL` in the `.env` file:
 
 ```bash
-DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db" # NOT FOR PRODUCTION
+API_TOKEN=mY-Very-Secret-Token # Set some good token
+
+# CORS_ALLOW_ORIGIN='<https://yourdomain.com>, <https://anotherdomain.com>'
+# CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
+CORS_ALLOW_ORIGIN='*' # This is not good for production
+
+# The URL of the API: CHANGE FOR PRODUCTION. Is user for Swagger server.
+APP_API_PRODUCTION_URL=<YOUR_PRODUCTION_URL_HERE>
 ```
 
-2. Configure the `CORS ORIGIN` in the `.env` file, by default is set to allow all pages, but this is not good for production:
+2. If you modify the database
 
-```bash
-CORS_ALLOW_ORIGIN='*' # Default, this is not secure
+<details><summary><strong>Migrate the database</strong></summary>
 
-CORS_ALLOW_ORIGIN='^https?://(<YOUR_URL>)(:[0-9]+)?$'
+When making migrations, you need to check the migration code before migrating to DB (`/migrations/<migration>.php`) File, sometimes the generated code is not correct.
+On the other hand, we were using SQLite in local, but in prod you should use something else, in this case, we used PostgreSQL.
+So, we need to check the code and change it to match the DB, for example take a look at the migration code:
+
+```php
+public function up(Schema $schema): void
+{
+    // Detect if we are using PostgreSQL
+    if ($this->connection->getDatabasePlatform()->getName() === 'postgresql') {
+        $this->addSql('CREATE TABLE category (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(128) NOT NULL,
+            description TEXT DEFAULT NULL
+        )');
+        $this->addSql('CREATE TABLE product (
+            id SERIAL PRIMARY KEY,
+            category_id INTEGER DEFAULT NULL,
+            name VARCHAR(128) NOT NULL,
+            description TEXT DEFAULT NULL,
+            price DOUBLE PRECISION NOT NULL,
+            CONSTRAINT FK_D34A04AD12469DE2 FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE
+        )');
+        $this->addSql('CREATE INDEX IDX_D34A04AD12469DE2 ON product (category_id)');
+    }
+    // Detect if we are using SQLite
+    elseif ($this->connection->getDatabasePlatform()->getName() === 'sqlite') {
+        $this->addSql('CREATE TABLE category (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name VARCHAR(128) NOT NULL,
+            description TEXT DEFAULT NULL
+        )');
+        $this->addSql('CREATE TABLE product (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            category_id INTEGER DEFAULT NULL,
+            name VARCHAR(128) NOT NULL,
+            description TEXT DEFAULT NULL,
+            price DOUBLE PRECISION NOT NULL,
+            CONSTRAINT FK_D34A04AD12469DE2 FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE
+        )');
+        $this->addSql('CREATE INDEX IDX_D34A04AD12469DE2 ON product (category_id)');
+    }
+}
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
+You can see that we are using `SERIAL` for the `id` column in PostgreSQ, but in SQLite we are using `INTEGER` as well as `AUTOINCREMENT`, so we need to change the code to match the DB.
 
 
 ## 3. Configure Platform.sh for Symfony
@@ -411,6 +447,31 @@ platform project:list
 ```bash
 git push -u platform main
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
