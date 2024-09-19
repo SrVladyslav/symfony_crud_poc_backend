@@ -7,6 +7,8 @@ nelmio_api_doc:
         servers:
             - url: 'http://localhost:8000'
               description: 'Local development server'
+            - url: '<YOUR_PRODUCTION_URL>'
+              description: 'Production server'
         components:
             securitySchemes:
                 Bearer:
