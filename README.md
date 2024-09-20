@@ -201,9 +201,9 @@ If you are running the server locally, you can access the Swagger UI at [http://
 
 ## 2. 🔥 Using Next.js Frontend Locally 🔥
 
-![Dedicated NextJS Frontend](https://github.com/SrVladyslav/symfony_crud_poc_frontend/blob/main/public/images/frontend_view.png?raw=true)
+![Dedicated NextJS Frontend](https://github.com/SrVladyslav/symfony_crud_poc_frontend/blob/main/public/images/localhostfrontend.png?raw=true)
 
-This is a frontend app created for testing purposes of the Symfony API server running on localhost at port `8000`.
+This is a frontend app created for testing purposes of the Symfony API server running on localhost at port `8000`. It allows you to add a `page limit` query parameter as well as `page` parameter for pagination.
 
 2.1. Keep the Symfony server running and open another terminal in the directory where you want to save this project, then download the it locally. You can go to the [frontend repository](https://github.com/SrVladyslav/symfony_crud_poc_frontend) and clone it to your local machine. Or just run:
 
@@ -466,9 +466,9 @@ git push -u platform main
 
 # 🚀 Test the deployed backend endpoints
 
-![Frontend from vercel](https://github.com/SrVladyslav/symfony_crud_poc_frontend/blob/main/public/images/prod_frontend.png?raw=true)
+![Frontend from vercel](https://github.com/SrVladyslav/symfony_crud_poc_frontend/blob/main/public/images/prod_frontend_new.png?raw=true)
 
-- The easiest way is to use the `NextJS` frontend deployed to Vercel, just go to [https://symfony.vlamaz.com/](https://symfony.vlamaz.com/), paste your platform.sh project URL in the input, click `Change URL` button and reload the page. Voilà, now you can use your backend perfectly!
+- The easiest way is to use the `NextJS` frontend deployed to Vercel, just go to [https://symfony.vlamaz.com/](https://symfony.vlamaz.com/), paste your platform.sh project URL in the input, click `Change URL` button and reload the page. Voilà, now you can use your backend perfectly! You can also add a `page limit` query parameter as well as a specific `page` number for pagination.
 
 - The other way is to use the backend Swagger, just go to `/api-docs`.
 
