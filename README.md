@@ -1,5 +1,14 @@
 This document provides an overview of the available API endpoints, their usage, and guidelines on how to test them.
 
+# 📚 Table of contents 
+
+- [API Important considerations](https://github.com/SrVladyslav/symfony_crud_poc_backend?tab=readme-ov-file#%EF%B8%8F-api-important-considerations)
+- [Project setup](https://github.com/SrVladyslav/symfony_crud_poc_backend?tab=readme-ov-file#-project-setup)
+- [Testing the API Endpoints](https://github.com/SrVladyslav/symfony_crud_poc_backend?tab=readme-ov-file#-testing-the-api-endpoints)
+- [Symfony deployment to Platform.sh](https://github.com/SrVladyslav/symfony_crud_poc_backend?tab=readme-ov-file#-symfony-deployment-to-platformsh)
+- [Test the deployed backend endpoints](https://github.com/SrVladyslav/symfony_crud_poc_backend?tab=readme-ov-file#-test-the-deployed-backend-endpoints)
+- [Useful Commands](https://github.com/SrVladyslav/symfony_crud_poc_backend?tab=readme-ov-file#useful-commands)
+
 # ⚠️ API Important considerations
 
 - We suppose that each product must have a `category`, so $${\color{yellow}first \space you \space need \space to \space create \space a \space category \space before \space creating \space a \space product}$$.
@@ -469,6 +478,9 @@ git push -u platform main
 - The easiest way is to use the `NextJS` frontend deployed to Vercel, just go to [https://symfony.vlamaz.com/](https://symfony.vlamaz.com/), paste your platform.sh project URL in the input, click `Change URL` button and reload the page. Voilà, now you can use your backend perfectly! You can also add a `page limit` query parameter as well as a specific `page` number for pagination.
 
 - The other way is to use the backend Swagger, just go to `/api-docs`.
+
+> [!TIP]
+> You also have a deployed backend server on ( https://main-bvxea6i-hanqg6twaqie4.eu-5.platformsh.site/api-docs )
 
 <hr/>
 <br/>
